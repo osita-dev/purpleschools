@@ -58,7 +58,7 @@ export default function LearnPage() {
   const [microWinMessage, setMicroWinMessage] = useState("");
   const [microWinEmoji, setMicroWinEmoji] = useState("⭐");
   const messagesEndRef = useRef<HTMLDivElement>(null);
-  const studyTimerRef = useRef<NodeJS.Timeout | null>(null);
+  const studyTimerRef = useRef<number | null>(null);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
