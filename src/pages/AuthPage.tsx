@@ -74,7 +74,7 @@ export default function AuthPage() {
         transition={{ delay: 0.3 }}
         className="flex-1 px-4 pb-8"
       >
-        <Card className="max-w-md mx-auto" variant="glass">
+        <Card className="max-w-md mx-auto">
           <CardHeader className="text-center pb-4">
             <CardTitle className="text-2xl">
               {isLogin ? "Welcome Back!" : "Join PurpleSchool"}
