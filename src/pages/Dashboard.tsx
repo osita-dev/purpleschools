@@ -34,8 +34,8 @@ export default function Dashboard() {
   const [user, setUser] = useState<User | null>(null);
   const [showMicroWin, setShowMicroWin] = useState(false);
   const [showStreak, setShowStreak] = useState(false);
-  const { stats, achievements, getStreakMessage } = useAchievementsContext();
-
+  const { stats, achievements} = useAchievementsContext();
+//  getStreakMessage
   useEffect(() => {
     const userData = localStorage.getItem("user");
     if (userData) {
@@ -56,7 +56,7 @@ export default function Dashboard() {
 
   if (!user) return null;
 
-  const _streakInfo = getStreakMessage();
+  // const _streakInfo = getStreakMessage();
   const microWinsCount = achievements.length;
   const studyMinutes = stats.studyTimeMinutes;
   const progressPercent = Math.min(100, Math.round((studyMinutes / 30) * 100));
@@ -268,7 +268,7 @@ export default function Dashboard() {
         targetStreak={7}
         isAtRisk={user.streak >= 5}
       />
-      <p>{_streakInfo.message}</p>
+
 
     </div>
   );
