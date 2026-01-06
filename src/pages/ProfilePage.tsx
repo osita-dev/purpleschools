@@ -114,11 +114,6 @@ export default function ProfilePage() {
 
   if (!user) return null;
 
-// const settingsItems = [
-//     { icon: Bell, label: "Notifications", description: "Manage your reminders" },
-//     { icon: Shield, label: "Privacy", description: "Control your data" },
-//   ];
-
   return (
     <div className="min-h-screen gradient-calm pb-24 md:pb-8 md:pt-24">
       <Header />

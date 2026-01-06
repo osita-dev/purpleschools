@@ -56,7 +56,7 @@ export default function Dashboard() {
 
   if (!user) return null;
 
-  getStreakMessage();
+  const _streakInfo = getStreakMessage();
   const microWinsCount = achievements.length;
   const studyMinutes = stats.studyTimeMinutes;
   const progressPercent = Math.min(100, Math.round((studyMinutes / 30) * 100));
