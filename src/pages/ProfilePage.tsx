@@ -1,9 +1,9 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Avatar } from "@/components/shared/Avatar";
 import { BottomNav } from "@/components/layout/BottomNav";
 import { Header } from "@/components/layout/Header";
@@ -114,10 +114,10 @@ export default function ProfilePage() {
 
   if (!user) return null;
 
-const settingsItems = [
-    { icon: Bell, label: "Notifications", description: "Manage your reminders" },
-    { icon: Shield, label: "Privacy", description: "Control your data" },
-  ];
+// const settingsItems = [
+//     { icon: Bell, label: "Notifications", description: "Manage your reminders" },
+//     { icon: Shield, label: "Privacy", description: "Control your data" },
+//   ];
 
   return (
     <div className="min-h-screen gradient-calm pb-24 md:pb-8 md:pt-24">
