@@ -114,7 +114,7 @@ export default function ProfilePage() {
 
   if (!user) return null;
 
-  const settingsItems = [
+const settingsItems = [
     { icon: Bell, label: "Notifications", description: "Manage your reminders" },
     { icon: Shield, label: "Privacy", description: "Control your data" },
   ];
