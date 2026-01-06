@@ -93,7 +93,7 @@ export function StreakModal({
                 transition={{ delay: 0.6 }}
                 className="space-y-3"
               >
-                <Button onClick={onClose} className="w-full" variant="warm">
+                <Button onClick={onClose} className="w-full" >
                   <Heart className="w-4 h-4 mr-2" />
                   Continue Learning
                 </Button>

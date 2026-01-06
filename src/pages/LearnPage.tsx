@@ -35,15 +35,15 @@ const aiResponses: Record<string, string> = {
 
 export default function LearnPage() {
   const navigate = useNavigate();
-  const { 
-    incrementQuestions, 
-    startStudySession, 
-    updateStudyTime, 
+  const {
+    incrementQuestions,
+    startStudySession,
+    updateStudyTime,
     updateStreak,
-    newAchievement, 
-    clearNewAchievement 
+    newAchievement,
+    clearNewAchievement
   } = useAchievementsContext();
-  
+
   const [messages, setMessages] = useState<Message[]>([
     {
       id: "1",
@@ -58,8 +58,8 @@ export default function LearnPage() {
   const [microWinMessage, setMicroWinMessage] = useState("");
   const [microWinEmoji, setMicroWinEmoji] = useState("⭐");
   const messagesEndRef = useRef<HTMLDivElement>(null);
-  const studyTimerRef = useRef<number | null>(null);
-
+  // const studyTimerRef = useRef<number | null>(null);
+  const studyTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
@@ -72,7 +72,7 @@ export default function LearnPage() {
   useEffect(() => {
     startStudySession();
     updateStreak();
-    
+
     // Update study time every minute
     studyTimerRef.current = setInterval(() => {
       updateStudyTime();
@@ -130,7 +130,7 @@ export default function LearnPage() {
     setMessages((prev) => [...prev, userMessage]);
     setInput("");
     setIsTyping(true);
-    
+
     // Track question and check for achievements
     incrementQuestions();
 
@@ -213,9 +213,8 @@ export default function LearnPage() {
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -10 }}
-                className={`flex gap-3 ${
-                  message.role === "user" ? "flex-row-reverse" : ""
-                }`}
+                className={`flex gap-3 ${message.role === "user" ? "flex-row-reverse" : ""
+                  }`}
               >
                 {message.role === "assistant" ? (
                   <div className="w-10 h-10 gradient-primary rounded-xl flex items-center justify-center flex-shrink-0 shadow-soft">
@@ -225,11 +224,10 @@ export default function LearnPage() {
                   <Avatar name="You" size="md" className="flex-shrink-0" />
                 )}
                 <Card
-                  className={`max-w-[80%] ${
-                    message.role === "user"
+                  className={`max-w-[80%] ${message.role === "user"
                       ? "bg-primary text-primary-foreground"
                       : "bg-card"
-                  }`}
+                    }`}
                 >
                   <div className="p-4">
                     <p className="whitespace-pre-wrap text-sm leading-relaxed">

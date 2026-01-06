@@ -1,32 +1,22 @@
 import * as React from "react"
+
 import { cn } from "@/lib/utils"
 
-// ✅ 1. Added CardProps interface to include 'variant'
-// Previously, Card just used React.HTMLAttributes<HTMLDivElement>, which caused TS errors on 'variant'
-interface CardProps extends React.HTMLAttributes<HTMLDivElement> {
-  variant?: "default" | "gradient"
-}
-
-// ✅ 2. Updated Card component to accept variant
-const Card = React.forwardRef<HTMLDivElement, CardProps>(
-  ({ className, variant = "default", ...props }, ref) => {
-    return (
-      <div
-        ref={ref}
-        className={cn(
-          "rounded-xl border bg-card text-card-foreground shadow",
-          // ✅ 3. Added variant styling logic for 'gradient'
-          variant === "gradient" && "bg-gradient-to-r from-purple-500 to-pink-500 text-white",
-          className
-        )}
-        {...props}
-      />
-    )
-  }
-)
+const Card = React.forwardRef<
+  HTMLDivElement,
+  React.HTMLAttributes<HTMLDivElement>
+>(({ className, ...props }, ref) => (
+  <div
+    ref={ref}
+    className={cn(
+      "rounded-xl border bg-card text-card-foreground shadow",
+      className
+    )}
+    {...props}
+  />
+))
 Card.displayName = "Card"
 
-// Subcomponents stay the same — no variant needed
 const CardHeader = React.forwardRef<
   HTMLDivElement,
   React.HTMLAttributes<HTMLDivElement>
@@ -83,5 +73,4 @@ const CardFooter = React.forwardRef<
 ))
 CardFooter.displayName = "CardFooter"
 
-// ✅ 4. Export everything as before
 export { Card, CardHeader, CardFooter, CardTitle, CardDescription, CardContent }

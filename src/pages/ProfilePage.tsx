@@ -342,7 +342,7 @@ export default function ProfilePage() {
           className="mt-8"
         >
           <h3 className="text-lg font-semibold text-foreground mb-4">Your Journey</h3>
-          <Card variant="gradient">
+          <Card>
             <CardContent className="p-6">
               <div className="grid grid-cols-2 gap-6">
                 <div className="text-center">

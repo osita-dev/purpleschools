@@ -148,7 +148,7 @@ export default function Dashboard() {
           transition={{ delay: 0.2 }}
           className="mb-8"
         >
-          <Card variant="gradient" className="overflow-hidden">
+          <Card className="overflow-hidden">
             <CardContent className="p-6 relative">
               <div className="absolute top-4 right-4 opacity-20">
                 <Sparkles className="w-16 h-16" />
@@ -268,6 +268,8 @@ export default function Dashboard() {
         targetStreak={7}
         isAtRisk={user.streak >= 5}
       />
+      <p>{_streakInfo.message}</p>
+
     </div>
   );
 }
