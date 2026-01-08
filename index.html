@@ -1,13 +1,139 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Purpleschool</title>
-  </head>
-  <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.tsx"></script>
-  </body>
+
+<head>
+  <!-- ========================= -->
+  <!-- BASIC DOCUMENT META -->
+  <!-- ========================= -->
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta http-equiv="Content-Language" content="en" />
+
+  <!-- ========================= -->
+  <!-- PRIMARY SEO META -->
+  <!-- ========================= -->
+  <title>PurpleSchool | AI-Powered Learning Platform for Secondary School Students</title>
+
+  <meta name="description"
+    content="PurpleSchool is an AI-powered learning platform built for secondary school students. Learn smarter with guided AI explanations, progress levels, streaks, and a safe, student-first learning environment." />
+
+  <meta name="keywords"
+    content="PurpleSchool, AI education, secondary school learning, AI tutor for students, online learning platform, study with AI, smart learning app, edtech, student dashboard, learning progress system" />
+
+  <meta name="author" content="PurpleSchool" />
+  <meta name="publisher" content="PurpleSchool" />
+  <meta name="copyright" content="PurpleSchool" />
+  <meta name="rating" content="general" />
+  <meta name="distribution" content="global" />
+  <meta name="coverage" content="worldwide" />
+  <meta name="revisit-after" content="7 days" />
+
+  <!-- ========================= -->
+  <!-- SEARCH ENGINE DIRECTIVES -->
+  <!-- ========================= -->
+  <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
+  <meta name="googlebot" content="index, follow" />
+  <meta name="bingbot" content="index, follow" />
+
+  <!-- ========================= -->
+  <!-- CANONICAL -->
+  <!-- ========================= -->
+  <link rel="canonical" href="https://www.purpleschool.org/" />
+
+  <!-- ========================= -->
+  <!-- FAVICONS & APP ICONS -->
+  <!-- ========================= -->
+  <link rel="icon" href="/favicon.svg" />
+  <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+  <link rel="manifest" href="/site.webmanifest" />
+
+  <!-- ========================= -->
+  <!-- THEME / UI COLORS -->
+  <!-- ========================= -->
+  <!-- <meta name="theme-color" content="#7C3AED" />
+  <meta name="msapplication-TileColor" content="#7C3AED" /> -->
+  <meta name="color-scheme" content="light dark" />
+
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+  <meta name="apple-mobile-web-app-title" content="PurpleSchool" />
+
+  <!-- ========================= -->
+  <!-- OPEN GRAPH (SOCIAL SHARING) -->
+  <!-- ========================= -->
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="PurpleSchool" />
+  <meta property="og:title" content="PurpleSchool | AI-Powered Learning for Secondary School Students" />
+  <meta property="og:description"
+    content="An AI-powered learning platform helping secondary school students learn consistently, track progress, and grow with guided AI support." />
+  <meta property="og:url" content="https://www.purpleschool.ai/" />
+  <meta property="og:image" content="https://www.purpleschool.ai/og-image.png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:locale" content="en_US" />
+
+  <!-- ========================= -->
+  <!-- TWITTER / X META -->
+  <!-- ========================= -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="PurpleSchool | AI Learning Platform for Students" />
+  <meta name="twitter:description"
+    content="PurpleSchool helps secondary school students learn better with AI-guided explanations, progress levels, and habit-based learning." />
+  <meta name="twitter:image" content="https://www.purpleschool.ai/og-image.png" />
+  <meta name="twitter:site" content="@purpleschool" />
+  <meta name="twitter:creator" content="@purpleschool" />
+
+  <!-- ========================= -->
+  <!-- APP / PWA META -->
+  <!-- ========================= -->
+  <meta name="application-name" content="PurpleSchool" />
+  <meta name="apple-mobile-web-app-title" content="PurpleSchool" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+  <meta name="format-detection" content="telephone=no" />
+
+  <!-- ========================= -->
+  <!-- SECURITY & PRIVACY HINTS -->
+  <!-- ========================= -->
+  <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin" />
+  <meta http-equiv="Permissions-Policy" content="camera=(), microphone=(), geolocation=()" />
+
+  <!-- ========================= -->
+  <!-- PERFORMANCE HINTS -->
+  <!-- ========================= -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="dns-prefetch" href="//fonts.googleapis.com" />
+  <link rel="dns-prefetch" href="//fonts.gstatic.com" />
+
+</head>
+
+<body>
+  <div id="root"></div>
+  <script type="module" src="/src/main.tsx"></script>
+</body>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "EducationalOrganization",
+  "name": "PurpleSchool",
+  "url": "https://www.purpleschool.org",
+  "logo": "https://www.purpleschool.org/vite.svg",
+  "description": "PurpleSchool is an AI-powered learning platform designed for secondary school students to learn consistently through guided AI interaction, progress tracking, and habit-based education.",
+  "sameAs": [
+    "https://twitter.com/purpleschool",
+    "https://www.linkedin.com/company/purpleschool"
+  ],
+  "educationalLevel": "Secondary School",
+  "audience": {
+    "@type": "EducationalAudience",
+    "educationalRole": "student"
+  }
+}
+</script>
+
 </html>

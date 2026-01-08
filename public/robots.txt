@@ -1,0 +1,24 @@
+User-agent: *
+Allow: /
+
+# Block private and app-only routes
+Disallow: /dashboard
+Disallow: /learn
+Disallow: /chat
+Disallow: /profile
+Disallow: /settings
+Disallow: /auth
+Disallow: /login
+Disallow: /signup
+
+# Block API routes
+Disallow: /api
+
+# Allow static assets for proper rendering
+Allow: /assets/
+Allow: /images/
+Allow: /*.css$
+Allow: /*.js$
+
+# Sitemap location
+Sitemap: https://www.purpleschool.org/sitemap.xml

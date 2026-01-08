@@ -1,0 +1,12 @@
+{
+  "name": "PurpleSchool",
+  "short_name": "PurpleSchool",
+  "description": "AI-powered learning platform for secondary school students. Learn consistently with guided AI explanations, progress levels, and habit-based education.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "orientation": "portrait",
+  "categories": ["education", "productivity"],
+  "lang": "en"
+}
