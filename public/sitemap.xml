@@ -1,42 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<urlset
-  xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
->
-
-  <!-- Homepage -->
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>https://www.purpleschool.org/</loc>
-    <lastmod>2026-01-01</lastmod>
+    <loc>https://purpleschool.org/</loc>
+    <lastmod>2026-01-08</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
   </url>
-
-  <!-- About -->
-  <url>
-    <loc>https://www.purpleschool.org/about</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-
-  <!-- Features -->
-  <url>
-    <loc>https://www.purpleschool.org/features</loc>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>
-
-  <!-- How It Works -->
-  <url>
-    <loc>https://www.purpleschool.org/how-it-works</loc>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
-  </url>
-
-  <!-- Contact -->
-  <url>
-    <loc>https://www.purpleschool.org/contact</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.5</priority>
-  </url>
-
 </urlset>
