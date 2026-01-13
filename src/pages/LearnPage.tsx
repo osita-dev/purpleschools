@@ -73,8 +73,8 @@ export default function LearnPage() {
   const [microWinMessage, setMicroWinMessage] = useState("");
   const [microWinEmoji, setMicroWinEmoji] = useState("⭐");
   const messagesEndRef = useRef<HTMLDivElement>(null);
-  const studyTimerRef = useRef<NodeJS.Timeout | null>(null);
-  
+  // const studyTimerRef = useRef<NodeJS.Timeout | null>(null);
+   const studyTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   // Queue for showing modals one after another
   const [modalQueue, setModalQueue] = useState<Array<{ message: string; emoji: string }>>([]);
   const [isShowingModal, setIsShowingModal] = useState(false);
