@@ -4,12 +4,13 @@ import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Avatar } from "@/components/shared/Avatar";
-import { ProgressRing } from "@/components/shared/ProgressRing";
+import { LevelProgressRing } from "@/components/shared/LevelProgressRing";
 import { MicroWinModal } from "@/components/modals/MicroWinModal";
 import { StreakModal } from "@/components/modals/StreakModal";
+import { LevelUpModal } from "@/components/modals/LevelUpModal";
 import { BottomNav } from "@/components/layout/BottomNav";
 import { Header } from "@/components/layout/Header";
-import { useAchievementsContext } from "@/contexts/AchievementsContext";
+import { useLevelProgressContext } from "@/contexts/LevelProgressContext";
 import { 
   MessageCircle, 
   Flame, 
@@ -34,29 +35,113 @@ export default function Dashboard() {
   const [user, setUser] = useState<User | null>(null);
   const [showMicroWin, setShowMicroWin] = useState(false);
   const [showStreak, setShowStreak] = useState(false);
-  const { stats, achievements} = useAchievementsContext();
-//  getStreakMessage
+  const [microWinMessage, setMicroWinMessage] = useState("");
+  const [microWinEmoji, setMicroWinEmoji] = useState("🎯");
+  
+  const { 
+    currentLevel, 
+    progressToNextLevel, 
+    currentXP,
+    stats,
+    achievements,
+    levelUpMessage, 
+    clearLevelUpMessage, 
+    getEncouragingMessage,
+    getStreakMessage,
+    recordDailyLogin,
+    updateStreak,
+    isLoaded,
+    newAchievement,
+    clearNewAchievement
+  } = useLevelProgressContext();
+
+  // Queue for showing modals one after another
+  const [modalQueue, setModalQueue] = useState<Array<{ message: string; emoji: string }>>([]);
+  const [isShowingModal, setIsShowingModal] = useState(false);
+
   useEffect(() => {
     const userData = localStorage.getItem("user");
     if (userData) {
       const parsed = JSON.parse(userData);
-      // Sync streak from achievements context
+      // Sync streak from unified context
       if (stats.streak > 0) {
         parsed.streak = stats.streak;
       }
       setUser(parsed);
-      // Show streak modal on first load if close to target
+
+      // Show streak modal at most once per day (avoid popping every navigation)
       if (parsed.streak >= 5 && parsed.streak < 7) {
-        setTimeout(() => setShowStreak(true), 1000);
+        const today = new Date().toISOString().split("T")[0];
+        const lastShown = localStorage.getItem("purpleschool_streak_modal_last_shown");
+
+        if (lastShown !== today) {
+          localStorage.setItem("purpleschool_streak_modal_last_shown", today);
+          setTimeout(() => setShowStreak(true), 1000);
+        }
       }
     } else {
       navigate("/");
     }
   }, [navigate, stats.streak]);
 
+  // Record daily login and update streak when Dashboard loads (with delay to allow state to settle)
+  // Only call updateStreak - daily login is handled separately after streak modal closes
+  useEffect(() => {
+    if (isLoaded) {
+      const timer = setTimeout(() => {
+        updateStreak();
+      }, 100);
+      
+      return () => clearTimeout(timer);
+    }
+  }, [isLoaded, updateStreak]);
+
+  // Call recordDailyLogin only after streak modal has been shown (when queue is empty and not showing)
+  const [hasCalledDailyLogin, setHasCalledDailyLogin] = useState(false);
+  
+  useEffect(() => {
+    if (isLoaded && !hasCalledDailyLogin && modalQueue.length === 0 && !isShowingModal && !showMicroWin) {
+      // Wait a bit after streak modal closes, then trigger daily login
+      const timer = setTimeout(() => {
+        recordDailyLogin();
+        setHasCalledDailyLogin(true);
+      }, 600);
+      
+      return () => clearTimeout(timer);
+    }
+  }, [isLoaded, hasCalledDailyLogin, modalQueue.length, isShowingModal, showMicroWin, recordDailyLogin]);
+
+  // Add new achievement to queue with a small delay to prevent race conditions
+  useEffect(() => {
+    if (newAchievement) {
+      const timer = setTimeout(() => {
+        setModalQueue(prev => [...prev, { message: newAchievement.message, emoji: newAchievement.emoji }]);
+        clearNewAchievement();
+      }, 50);
+      return () => clearTimeout(timer);
+    }
+  }, [newAchievement, clearNewAchievement]);
+
+  // Show modals one after another
+  useEffect(() => {
+    if (modalQueue.length > 0 && !isShowingModal) {
+      const next = modalQueue[0];
+      setMicroWinMessage(next.message);
+      setMicroWinEmoji(next.emoji);
+      setIsShowingModal(true);
+      setTimeout(() => setShowMicroWin(true), 500);
+    }
+  }, [modalQueue, isShowingModal]);
+
+  const handleCloseMicroWin = () => {
+    setShowMicroWin(false);
+    setIsShowingModal(false);
+    setModalQueue(prev => prev.slice(1)); // Remove shown modal from queue
+  };
+
   if (!user) return null;
 
-  // const _streakInfo = getStreakMessage();
+  const streakInfo = getStreakMessage();
   const microWinsCount = achievements.length;
   const studyMinutes = stats.studyTimeMinutes;
   const progressPercent = Math.min(100, Math.round((studyMinutes / 30) * 100));
@@ -90,6 +175,12 @@ export default function Dashboard() {
               <p className="text-muted-foreground">
                 {user.className} • {user.school}
               </p>
+              <div className="flex items-center gap-2 mt-1">
+                <span className="text-lg">{currentLevel.icon}</span>
+                <span className="text-xs px-2 py-0.5 rounded-full bg-primary/10 text-primary font-semibold">
+                  Lvl {currentLevel.id} • {currentLevel.name}
+                </span>
+              </div>
             </div>
           </div>
           <p className="text-muted-foreground italic bg-secondary/50 rounded-xl p-4">
@@ -112,17 +203,27 @@ export default function Dashboard() {
               <div className="w-10 h-10 mx-auto mb-2 rounded-full bg-warning/10 flex items-center justify-center">
                 <Flame className="w-5 h-5 text-warning" />
               </div>
-              <p className="text-2xl font-bold text-foreground">{user.streak}</p>
+              <p className="text-2xl font-bold text-foreground">{stats.streak}</p>
               <p className="text-xs text-muted-foreground">Day Streak</p>
             </CardContent>
           </Card>
 
-          <Card className="text-center">
+          <Card 
+            className="text-center cursor-pointer hover:shadow-soft transition-shadow"
+            onClick={() => {
+              const loginAchievement = achievements.find(a => a.type === "daily_login");
+              if (loginAchievement) {
+                setMicroWinMessage(loginAchievement.message);
+                setMicroWinEmoji(loginAchievement.emoji);
+                setShowMicroWin(true);
+              }
+            }}
+          >
             <CardContent className="p-4">
               <div className="w-10 h-10 mx-auto mb-2 rounded-full bg-primary/10 flex items-center justify-center">
                 <Calendar className="w-5 h-5 text-primary" />
               </div>
-              <p className="text-2xl font-bold text-foreground">{user.daysActive}</p>
+              <p className="text-2xl font-bold text-foreground">{stats.totalDaysActive}</p>
               <p className="text-xs text-muted-foreground">Days Active</p>
             </CardContent>
           </Card>
@@ -148,7 +249,7 @@ export default function Dashboard() {
           transition={{ delay: 0.2 }}
           className="mb-8"
         >
-          <Card className="overflow-hidden">
+          <Card variant="gradient" className="overflow-hidden">
             <CardContent className="p-6 relative">
               <div className="absolute top-4 right-4 opacity-20">
                 <Sparkles className="w-16 h-16" />
@@ -169,38 +270,45 @@ export default function Dashboard() {
           </Card>
         </motion.div>
 
-        {/* Today's Progress */}
+        {/* Learning Level Progress */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.3 }}
         >
-          <h3 className="text-lg font-semibold text-foreground mb-4">Today's Progress</h3>
-          <Card>
+          <h3 className="text-lg font-semibold text-foreground mb-4">Your Learning Level</h3>
+          <Card className="overflow-hidden">
             <CardContent className="p-6">
               <div className="flex items-center gap-6">
-                <ProgressRing progress={progressPercent} size={80}>
-                  <span className="text-lg font-bold text-primary">{progressPercent}%</span>
-                </ProgressRing>
+                <LevelProgressRing size={100} />
                 <div className="flex-1">
-                  <p className="font-semibold text-foreground mb-1">
-                    {studyMinutes > 0 ? "You're doing great today!" : "Ready to start learning?"}
-                  </p>
-                  <p className="text-sm text-muted-foreground mb-3">
-                    {studyMinutes > 0 
-                      ? `You've studied for ${studyMinutes} minute${studyMinutes !== 1 ? 's' : ''}. Keep going or take a break – it's up to you.`
-                      : "Head to the Learn section to start your session!"}
-                  </p>
-                  <div className="flex flex-wrap gap-2">
-                    <span className="inline-flex items-center gap-1 text-xs bg-primary/10 text-primary px-3 py-1 rounded-full">
-                      <BookOpen className="w-3 h-3" />
-                      Mathematics
-                    </span>
-                    <span className="inline-flex items-center gap-1 text-xs bg-accent/10 text-accent px-3 py-1 rounded-full">
-                      <BookOpen className="w-3 h-3" />
-                      Science
+                  <div className="flex items-center gap-2 mb-1">
+                    <p className="font-semibold text-foreground">
+                      {currentLevel.name}
+                    </p>
+                    <span className="text-xs px-2 py-0.5 rounded-full bg-primary/10 text-primary font-medium">
+                      {currentLevel.phaseName}
                     </span>
                   </div>
+                  <p className="text-sm text-muted-foreground mb-3">
+                    {getEncouragingMessage()}
+                  </p>
+                  <div className="flex items-center gap-3">
+                    <div className="flex-1 h-2 bg-muted rounded-full overflow-hidden">
+                      <motion.div
+                        className="h-full gradient-primary rounded-full"
+                        initial={{ width: 0 }}
+                        animate={{ width: `${progressToNextLevel}%` }}
+                        transition={{ duration: 0.8, ease: "easeOut" }}
+                      />
+                    </div>
+                    <span className="text-xs text-muted-foreground font-medium">
+                      {currentXP} XP
+                    </span>
+                  </div>
+                  <p className="text-xs text-muted-foreground mt-2">
+                    Tap the ring to see your learning journey
+                  </p>
                 </div>
               </div>
             </CardContent>
@@ -256,20 +364,24 @@ export default function Dashboard() {
 
       <MicroWinModal
         isOpen={showMicroWin}
-        onClose={() => setShowMicroWin(false)}
-        message="You asked 3 questions today. Curiosity is your superpower!"
-        emoji="⭐"
+        onClose={handleCloseMicroWin}
+        message={microWinMessage || achievements[0]?.message || "Start learning to earn achievements!"}
+        emoji={microWinEmoji || achievements[0]?.emoji || "🎯"}
       />
 
       <StreakModal
         isOpen={showStreak}
         onClose={() => setShowStreak(false)}
-        currentStreak={user.streak}
+        currentStreak={stats.streak}
         targetStreak={7}
-        isAtRisk={user.streak >= 5}
+        isAtRisk={streakInfo.isAtRisk}
       />
 
-
+      <LevelUpModal
+        isOpen={!!levelUpMessage}
+        onClose={clearLevelUpMessage}
+        level={levelUpMessage?.level || null}
+      />
     </div>
   );
 }

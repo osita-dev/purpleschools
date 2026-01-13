@@ -1,9 +1,9 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Card, CardContent } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Avatar } from "@/components/shared/Avatar";
 import { BottomNav } from "@/components/layout/BottomNav";
 import { Header } from "@/components/layout/Header";
@@ -13,7 +13,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { useAchievementsContext } from "@/contexts/AchievementsContext";
+import { useLevelProgressContext } from "@/contexts/LevelProgressContext";
 import { 
   ArrowLeft, 
   User, 
@@ -23,7 +23,8 @@ import {
   Shield, 
   LogOut,
   ChevronRight,
-  Check
+  Check,
+  RotateCcw
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
@@ -39,7 +40,7 @@ interface User {
 export default function ProfilePage() {
   const navigate = useNavigate();
   const { toast } = useToast();
-  const { achievements, unreadCount, markAsRead, markAllAsRead } = useAchievementsContext();
+  const { achievements, unreadCount, markAsRead, markAllAsRead, stats } = useLevelProgressContext();
   const [user, setUser] = useState<User | null>(null);
   const [isEditing, setIsEditing] = useState(false);
   const [formData, setFormData] = useState({
@@ -113,6 +114,11 @@ export default function ProfilePage() {
   };
 
   if (!user) return null;
+
+  // const settingsItems = [
+  //   { icon: Bell, label: "Notifications", description: "Manage your reminders" },
+  //   { icon: Shield, label: "Privacy", description: "Control your data" },
+  // ];
 
   return (
     <div className="min-h-screen gradient-calm pb-24 md:pb-8 md:pt-24">
@@ -366,12 +372,40 @@ export default function ProfilePage() {
           </Card>
         </motion.div>
 
-        {/* Logout */}
+        {/* Reset Progress */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.3 }}
           className="mt-8"
+        >
+          <Button
+            variant="outline"
+            className="w-full border-warning/20 text-warning hover:bg-warning/5 mb-3"
+            onClick={() => {
+              // Clear all gamification data
+              localStorage.removeItem("purpleschool_game_state_v3");
+              localStorage.removeItem("purpleschool_achievements_v4");
+              localStorage.removeItem("purpleschool_streak_modal_last_shown");
+              toast({
+                title: "Progress Reset",
+                description: "All achievements and streak data have been cleared.",
+              });
+              // Reload to reset context state
+              window.location.reload();
+            }}
+          >
+            <RotateCcw className="w-4 h-4 mr-2" />
+            Reset All Progress
+          </Button>
+        </motion.div>
+
+        {/* Logout */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.4 }}
+          className="mt-4"
         >
           <Button
             variant="outline"

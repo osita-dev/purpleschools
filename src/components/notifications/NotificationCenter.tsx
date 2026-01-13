@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Bell, Check, X } from "lucide-react";
+import { Bell, Check, X, Zap } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import type { Achievement } from "@/hooks/useAchievements";
@@ -41,6 +41,8 @@ export function NotificationCenter({
         return "Study Time";
       case "streak":
         return "Streak";
+      case "level":
+        return "Level Up";
       default:
         return "Achievement";
     }
@@ -54,8 +56,10 @@ export function NotificationCenter({
         return "bg-accent/10 text-accent";
       case "streak":
         return "bg-warning/10 text-warning";
-      default:
+      case "level":
         return "bg-success/10 text-success";
+      default:
+        return "bg-muted text-muted-foreground";
     }
   };
 
@@ -151,6 +155,12 @@ export function NotificationCenter({
                               >
                                 {getTypeLabel(achievement.type)}
                               </span>
+                              {achievement.xpAwarded && achievement.xpAwarded > 0 && (
+                                <span className="text-xs px-2 py-0.5 rounded-full bg-success/10 text-success flex items-center gap-1">
+                                  <Zap className="w-3 h-3" />
+                                  +{achievement.xpAwarded} XP
+                                </span>
+                              )}
                               {!achievement.read && (
                                 <span className="w-2 h-2 bg-primary rounded-full" />
                               )}

@@ -1,95 +1,366 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
+
+// Enable debug logging for achievements
+const DEBUG_ACHIEVEMENTS = true;
+const log = (...args: unknown[]) => {
+  if (DEBUG_ACHIEVEMENTS) {
+    console.log('[Achievements]', ...args);
+  }
+};
+
+// ============================================
+// LEVEL DEFINITIONS - 15 Levels in 3 Phases
+// ============================================
+
+export interface Level {
+  id: number;
+  name: string;
+  phase: 1 | 2 | 3;
+  phaseName: string;
+  xpRequired: number;
+  icon: string;
+}
+
+export const LEVELS: Level[] = [
+  // Phase 1 - Foundation (Build habit)
+  { id: 1, name: "Newcomer", phase: 1, phaseName: "Foundation", xpRequired: 0, icon: "🌱" },
+  { id: 2, name: "Curious", phase: 1, phaseName: "Foundation", xpRequired: 50, icon: "🔍" },
+  { id: 3, name: "Learner", phase: 1, phaseName: "Foundation", xpRequired: 150, icon: "📖" },
+  { id: 4, name: "Explorer", phase: 1, phaseName: "Foundation", xpRequired: 300, icon: "🧭" },
+  { id: 5, name: "Dedicated", phase: 1, phaseName: "Foundation", xpRequired: 500, icon: "💪" },
+  
+  // Phase 2 - Growth (Build competence)
+  { id: 6, name: "Achiever", phase: 2, phaseName: "Growth", xpRequired: 800, icon: "🎯" },
+  { id: 7, name: "Enthusiast", phase: 2, phaseName: "Growth", xpRequired: 1200, icon: "⚡" },
+  { id: 8, name: "Scholar", phase: 2, phaseName: "Growth", xpRequired: 1700, icon: "🎓" },
+  { id: 9, name: "Specialist", phase: 2, phaseName: "Growth", xpRequired: 2300, icon: "🔬" },
+  { id: 10, name: "Expert", phase: 2, phaseName: "Growth", xpRequired: 3000, icon: "💎" },
+  
+  // Phase 3 - Mastery (Consistency and responsibility)
+  { id: 11, name: "Master", phase: 3, phaseName: "Mastery", xpRequired: 4000, icon: "🏆" },
+  { id: 12, name: "Mentor", phase: 3, phaseName: "Mastery", xpRequired: 5200, icon: "🌟" },
+  { id: 13, name: "Sage", phase: 3, phaseName: "Mastery", xpRequired: 6500, icon: "🦉" },
+  { id: 14, name: "Luminary", phase: 3, phaseName: "Mastery", xpRequired: 8000, icon: "✨" },
+  { id: 15, name: "Legend", phase: 3, phaseName: "Mastery", xpRequired: 10000, icon: "👑" },
+];
+
+// ============================================
+// ACHIEVEMENT THRESHOLDS (Award XP at milestones)
+// ============================================
+
+export const ACHIEVEMENT_THRESHOLDS = {
+  // Questions - odd numbers + key milestones
+  questions: [
+    { count: 1, message: "You asked your first question! Great start!", emoji: "🌱", xp: 5 },
+    { count: 3, message: "3 questions! Curiosity is your superpower.", emoji: "🌟", xp: 8 },
+    { count: 5, message: "5 questions! You're really engaging.", emoji: "🎯", xp: 10 },
+    { count: 7, message: "7 questions! Keep that curiosity alive!", emoji: "💡", xp: 12 },
+    { count: 9, message: "9 questions! Almost at 10!", emoji: "🔥", xp: 12 },
+    { count: 10, message: "10 questions! Double digits!", emoji: "🚀", xp: 20 },
+    { count: 15, message: "15 questions! Learning machine!", emoji: "⚡", xp: 20 },
+    { count: 25, message: "25 questions! You're unstoppable!", emoji: "🧠", xp: 30 },
+    { count: 50, message: "50 questions! Knowledge seeker extraordinaire!", emoji: "👑", xp: 50 },
+  ],
+  // Study time in minutes
+  studyTime: [
+    { minutes: 1, message: "You studied for 1 minute! Every second counts.", emoji: "⏱️", xp: 2 },
+    { minutes: 2, message: "2 minutes in! Building momentum.", emoji: "📖", xp: 3 },
+    { minutes: 3, message: "3 minutes! Focus is your friend.", emoji: "🎯", xp: 4 },
+    { minutes: 5, message: "5 minutes of focused learning!", emoji: "📚", xp: 8 },
+    { minutes: 10, message: "10 minutes! Your brain is thanking you.", emoji: "🧠", xp: 15 },
+    { minutes: 15, message: "15 minutes of learning! Impressive!", emoji: "✨", xp: 20 },
+    { minutes: 20, message: "20 minutes! You're in the zone!", emoji: "💪", xp: 20 },
+    { minutes: 30, message: "30 minutes! Half hour champion!", emoji: "🔥", xp: 30 },
+    { minutes: 45, message: "45 minutes! Almost an hour!", emoji: "⭐", xp: 35 },
+    { minutes: 60, message: "1 hour of learning! You're amazing!", emoji: "🏆", xp: 50 },
+  ],
+  // Daily streaks
+  streak: [
+    { days: 1, message: "Day 1! Every journey starts with a single step.", emoji: "👣", xp: 5 },
+    { days: 2, message: "2-day streak! You're building a habit.", emoji: "🔥", xp: 15 },
+    { days: 3, message: "3 days in a row! Consistency is key.", emoji: "💪", xp: 20 },
+    { days: 4, message: "4 days! You're on a roll!", emoji: "🌟", xp: 20 },
+    { days: 5, message: "5-day streak! You're unstoppable!", emoji: "⚡", xp: 30 },
+    { days: 6, message: "6 days! Almost a full week!", emoji: "✨", xp: 30 },
+    { days: 7, message: "A whole week! You're a learning machine!", emoji: "🎉", xp: 50 },
+    { days: 14, message: "Two weeks strong! Incredible dedication!", emoji: "🌟", xp: 75 },
+    { days: 21, message: "3 weeks! A habit is forming!", emoji: "💎", xp: 85 },
+    { days: 30, message: "30-day streak! You're a legend!", emoji: "👑", xp: 100 },
+  ],
+  // Total active days
+  dailyLogin: [
+    { totalDays: 1, message: "Day 1! You showed up today. That's a win!", emoji: "🎯", xp: 10 },
+    { totalDays: 3, message: "3 days active! You're showing up.", emoji: "📅", xp: 15 },
+    { totalDays: 5, message: "5 days active! Commitment unlocked.", emoji: "🎯", xp: 20 },
+    { totalDays: 7, message: "One week of activity! Well done.", emoji: "🗓️", xp: 25 },
+    { totalDays: 14, message: "2 weeks active! Learning is your thing.", emoji: "⭐", xp: 40 },
+    { totalDays: 30, message: "30 days active! You're dedicated.", emoji: "🏅", xp: 75 },
+  ],
+  // Subject diversity
+  subjectDiversity: [
+    { count: 3, message: "You've explored 3 subjects! Diverse learning builds strong minds.", emoji: "🎨", xp: 10 },
+    { count: 6, message: "6 subjects explored! You're a polymath in the making.", emoji: "🌈", xp: 20 },
+    { count: 10, message: "10 subjects! True intellectual curiosity!", emoji: "🎓", xp: 30 },
+  ],
+};
+
+// ============================================
+// DECAY RULES (Soft and gentle)
+// ============================================
+
+const DECAY_CONFIG = {
+  gracePeriodDays: 3,
+  freezePeriodDays: 7,
+  decayStartDays: 7,
+  dailyDecayPercent: 2,
+  maxDecayPercent: 30,
+  minLevelDrop: 1,
+};
+
+// ============================================
+// TYPES
+// ============================================
 
 export interface Achievement {
   id: string;
-  type: "questions" | "study_time" | "streak" | "general";
+  type: "questions" | "study_time" | "streak" | "daily_login" | "level" | "general" | "learn_welcome";
   message: string;
   emoji: string;
   timestamp: Date;
   read: boolean;
+  xpAwarded?: number;
 }
 
-interface AchievementStats {
+export interface GameState {
+  // XP & Levels
+  currentXP: number;
+  highestXPEver: number;
+  highestLevelEver: number;
+  lastActiveDate: string;
+  lastDecayApplied: string | null;
+  
+  // Stats
   questionsAsked: number;
   studyTimeMinutes: number;
   streak: number;
+  totalDaysActive: number;
+  totalStudySessions: number;
+  subjectsEngaged: string[];
+  
+  // Session tracking
   lastStudyDate: string | null;
+  lastLoginDate: string | null;
+  lastLearnWelcomeDate: string | null;
   sessionStartTime: number | null;
 }
 
-const ACHIEVEMENT_THRESHOLDS = {
-  questions: [
-    { count: 1, message: "You asked your first question! Great start!", emoji: "🌱" },
-    { count: 3, message: "You asked 3 questions! Curiosity is your superpower.", emoji: "🌟" },
-    { count: 5, message: "5 questions in! You're really engaging with the material.", emoji: "🎯" },
-    { count: 10, message: "10 questions! You're on a learning roll!", emoji: "🚀" },
-    { count: 25, message: "25 questions! You're a curious learner!", emoji: "🧠" },
-    { count: 50, message: "50 questions! Knowledge seeker extraordinaire!", emoji: "👑" },
-  ],
-  studyTime: [
-    { minutes: 1, message: "You studied for 1 minute! Every second counts.", emoji: "⏱️" },
-    { minutes: 5, message: "5 minutes of focused learning! Keep it up.", emoji: "📚" },
-    { minutes: 10, message: "10 minutes! Your brain is thanking you.", emoji: "🧠" },
-    { minutes: 15, message: "15 minutes of learning! Impressive focus!", emoji: "✨" },
-    { minutes: 30, message: "30 minutes! You're in the zone!", emoji: "🔥" },
-    { minutes: 60, message: "1 hour of learning! You're amazing!", emoji: "🏆" },
-  ],
-  streak: [
-    { days: 2, message: "2-day streak! You're building a habit.", emoji: "🔥" },
-    { days: 3, message: "3 days in a row! Consistency is key.", emoji: "💪" },
-    { days: 5, message: "5-day streak! You're unstoppable!", emoji: "⚡" },
-    { days: 7, message: "A whole week! You're a learning machine!", emoji: "🎉" },
-    { days: 14, message: "Two weeks strong! Incredible dedication!", emoji: "🌟" },
-    { days: 30, message: "30-day streak! You're a legend!", emoji: "👑" },
-  ],
+const STORAGE_KEY = "purpleschool_game_state_v3";
+const ACHIEVEMENTS_KEY = "purpleschool_achievements_v4";
+
+const DEFAULT_STATE: GameState = {
+  currentXP: 0,
+  highestXPEver: 0,
+  highestLevelEver: 1,
+  lastActiveDate: new Date().toISOString().split('T')[0],
+  lastDecayApplied: null,
+  
+  questionsAsked: 0,
+  studyTimeMinutes: 0,
+  streak: 0,
+  totalDaysActive: 0,
+  totalStudySessions: 0,
+  subjectsEngaged: [],
+  
+  lastStudyDate: null,
+  lastLoginDate: null,
+  lastLearnWelcomeDate: null,
+  sessionStartTime: null,
 };
 
-const STORAGE_KEY = "purpleschool_achievements";
-const STATS_KEY = "purpleschool_stats";
+// ============================================
+// HELPER FUNCTIONS
+// ============================================
+
+export function getLevelFromXP(xp: number): Level {
+  for (let i = LEVELS.length - 1; i >= 0; i--) {
+    if (xp >= LEVELS[i].xpRequired) {
+      return LEVELS[i];
+    }
+  }
+  return LEVELS[0];
+}
+
+export function getNextLevel(currentLevel: Level): Level | null {
+  const nextIndex = LEVELS.findIndex(l => l.id === currentLevel.id) + 1;
+  return nextIndex < LEVELS.length ? LEVELS[nextIndex] : null;
+}
+
+export function getProgressToNextLevel(xp: number): { progress: number; xpInLevel: number; xpNeeded: number } {
+  const currentLevel = getLevelFromXP(xp);
+  const nextLevel = getNextLevel(currentLevel);
+  
+  if (!nextLevel) {
+    return { progress: 100, xpInLevel: 0, xpNeeded: 0 };
+  }
+  
+  const xpInLevel = xp - currentLevel.xpRequired;
+  const xpNeeded = nextLevel.xpRequired - currentLevel.xpRequired;
+  const progress = Math.min(100, Math.round((xpInLevel / xpNeeded) * 100));
+  
+  return { progress, xpInLevel, xpNeeded };
+}
+
+function getDaysBetween(date1: string, date2: string): number {
+  const d1 = new Date(date1);
+  const d2 = new Date(date2);
+  const diffTime = Math.abs(d2.getTime() - d1.getTime());
+  return Math.floor(diffTime / (1000 * 60 * 60 * 24));
+}
+
+// ============================================
+// MAIN UNIFIED HOOK
+// ============================================
 
 export function useAchievements() {
+  const [state, setState] = useState<GameState>(DEFAULT_STATE);
   const [achievements, setAchievements] = useState<Achievement[]>([]);
-  const [stats, setStats] = useState<AchievementStats>({
-    questionsAsked: 0,
-    studyTimeMinutes: 0,
-    streak: 0,
-    lastStudyDate: null,
-    sessionStartTime: null,
-  });
   const [newAchievement, setNewAchievement] = useState<Achievement | null>(null);
+  const [levelUpMessage, setLevelUpMessage] = useState<{ level: Level; isUp: boolean } | null>(null);
+  const [isLoaded, setIsLoaded] = useState(false);
+  
+  // Prevent duplicate actions during the same render cycle
+  const actionLock = useRef<Set<string>>(new Set());
 
-  // Load from localStorage on mount
+  // ============================================
+  // LOAD STATE
+  // ============================================
+
   useEffect(() => {
-    const savedAchievements = localStorage.getItem(STORAGE_KEY);
-    const savedStats = localStorage.getItem(STATS_KEY);
+    const savedState = localStorage.getItem(STORAGE_KEY);
+    const savedAchievements = localStorage.getItem(ACHIEVEMENTS_KEY);
 
+    if (savedState) {
+      setState(JSON.parse(savedState));
+    }
     if (savedAchievements) {
       const parsed = JSON.parse(savedAchievements);
-      setAchievements(parsed.map((a: Achievement) => ({
-        ...a,
-        timestamp: new Date(a.timestamp),
-      })));
+      setAchievements(
+        parsed.map((a: Achievement) => ({
+          ...a,
+          timestamp: new Date(a.timestamp),
+        }))
+      );
     }
-
-    if (savedStats) {
-      setStats(JSON.parse(savedStats));
-    }
+    setIsLoaded(true);
   }, []);
 
-  // Save to localStorage when achievements or stats change
-  useEffect(() => {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(achievements));
-  }, [achievements]);
+  // ============================================
+  // SAVE STATE
+  // ============================================
 
   useEffect(() => {
-    localStorage.setItem(STATS_KEY, JSON.stringify(stats));
-  }, [stats]);
+    if (isLoaded) {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    }
+  }, [state, isLoaded]);
+
+  useEffect(() => {
+    if (isLoaded) {
+      localStorage.setItem(ACHIEVEMENTS_KEY, JSON.stringify(achievements));
+    }
+  }, [achievements, isLoaded]);
+
+  // Sync streak to user object for Dashboard
+  useEffect(() => {
+    if (isLoaded && state.streak > 0) {
+      const userData = localStorage.getItem("user");
+      if (userData) {
+        const user = JSON.parse(userData);
+        user.streak = state.streak;
+        localStorage.setItem("user", JSON.stringify(user));
+      }
+    }
+  }, [state.streak, isLoaded]);
+
+  // ============================================
+  // DECAY LOGIC
+  // ============================================
+
+  useEffect(() => {
+    if (!isLoaded) return;
+    
+    const today = new Date().toISOString().split('T')[0];
+    const daysSinceActive = getDaysBetween(state.lastActiveDate, today);
+    
+    if (daysSinceActive <= DECAY_CONFIG.gracePeriodDays) return;
+    if (daysSinceActive <= DECAY_CONFIG.freezePeriodDays) return;
+    if (state.lastDecayApplied === today) return;
+    
+    const daysOfDecay = daysSinceActive - DECAY_CONFIG.freezePeriodDays;
+    const decayPercent = Math.min(
+      daysOfDecay * DECAY_CONFIG.dailyDecayPercent,
+      DECAY_CONFIG.maxDecayPercent
+    );
+    
+    const xpLoss = Math.round(state.currentXP * (decayPercent / 100));
+    const newXP = Math.max(0, state.currentXP - xpLoss);
+    
+    const oldLevel = getLevelFromXP(state.currentXP);
+    const newLevel = getLevelFromXP(newXP);
+    
+    let finalXP = newXP;
+    if (oldLevel.id - newLevel.id > 1) {
+      const targetLevel = LEVELS.find(l => l.id === oldLevel.id - 1);
+      if (targetLevel) {
+        finalXP = targetLevel.xpRequired;
+      }
+    }
+    
+    setState(prev => ({
+      ...prev,
+      currentXP: finalXP,
+      lastDecayApplied: today,
+    }));
+  }, [isLoaded, state.lastActiveDate, state.lastDecayApplied, state.currentXP]);
+
+  // ============================================
+  // ADD XP (Core function)
+  // ============================================
+
+  const addXP = useCallback((amount: number, source?: string) => {
+    const today = new Date().toISOString().split('T')[0];
+    
+    setState(prev => {
+      const oldLevel = getLevelFromXP(prev.currentXP);
+      const newXP = prev.currentXP + amount;
+      const newLevel = getLevelFromXP(newXP);
+      
+      // Check for level up
+      if (newLevel.id > oldLevel.id) {
+        setLevelUpMessage({ level: newLevel, isUp: true });
+      }
+      
+      return {
+        ...prev,
+        currentXP: newXP,
+        highestXPEver: Math.max(prev.highestXPEver, newXP),
+        highestLevelEver: Math.max(prev.highestLevelEver, newLevel.id),
+        lastActiveDate: today,
+        lastDecayApplied: null,
+      };
+    });
+  }, []);
+
+  // ============================================
+  // ADD ACHIEVEMENT
+  // ============================================
 
   const addAchievement = useCallback((
     type: Achievement["type"],
     message: string,
-    emoji: string
-  ) => {
+    emoji: string,
+    xpAwarded?: number
+  ): Achievement => {
     const achievement: Achievement = {
       id: Date.now().toString(),
       type,
@@ -97,84 +368,139 @@ export function useAchievements() {
       emoji,
       timestamp: new Date(),
       read: false,
+      xpAwarded,
     };
 
-    setAchievements((prev) => [achievement, ...prev]);
+    setAchievements(prev => [achievement, ...prev]);
     setNewAchievement(achievement);
 
+    // Award XP for achievement
+    if (xpAwarded && xpAwarded > 0) {
+      addXP(xpAwarded, `achievement_${type}`);
+    }
+
     return achievement;
-  }, []);
+  }, [addXP]);
 
-  const checkQuestionAchievements = useCallback((newCount: number) => {
-    const threshold = ACHIEVEMENT_THRESHOLDS.questions.find(
-      (t) => t.count === newCount
-    );
-    if (threshold) {
-      addAchievement("questions", threshold.message, threshold.emoji);
-    }
-  }, [addAchievement]);
+  // ============================================
+  // RECORD QUESTION
+  // ============================================
 
-  const checkStudyTimeAchievements = useCallback((newMinutes: number) => {
-    const threshold = ACHIEVEMENT_THRESHOLDS.studyTime.find(
-      (t) => t.minutes === newMinutes
-    );
-    if (threshold) {
-      addAchievement("study_time", threshold.message, threshold.emoji);
-    }
-  }, [addAchievement]);
+  const recordQuestion = useCallback(() => {
+    if (actionLock.current.has("question")) return;
+    actionLock.current.add("question");
+    
+    setTimeout(() => actionLock.current.delete("question"), 100);
 
-  const checkStreakAchievements = useCallback((newStreak: number) => {
-    const threshold = ACHIEVEMENT_THRESHOLDS.streak.find(
-      (t) => t.days === newStreak
-    );
-    if (threshold) {
-      addAchievement("streak", threshold.message, threshold.emoji);
-    }
-  }, [addAchievement]);
-
-  const incrementQuestions = useCallback(() => {
-    setStats((prev) => {
+    setState(prev => {
       const newCount = prev.questionsAsked + 1;
-      checkQuestionAchievements(newCount);
-      return { ...prev, questionsAsked: newCount };
+      log(`Question recorded. Total: ${newCount}`);
+
+      // Check for milestone
+      const threshold = ACHIEVEMENT_THRESHOLDS.questions.find(
+        t => t.count === newCount
+      );
+      if (threshold) {
+        log(`Question achievement unlocked: ${threshold.message}`);
+        setTimeout(() => {
+          addAchievement("questions", threshold.message, threshold.emoji, threshold.xp);
+        }, 0);
+      }
+
+      return { 
+        ...prev, 
+        questionsAsked: newCount,
+        lastActiveDate: new Date().toISOString().split('T')[0],
+      };
     });
-  }, [checkQuestionAchievements]);
+  }, [addAchievement]);
+
+  // ============================================
+  // STUDY SESSION
+  // ============================================
 
   const startStudySession = useCallback(() => {
-    setStats((prev) => ({
+    setState(prev => ({
       ...prev,
       sessionStartTime: Date.now(),
     }));
   }, []);
 
+  // Track accumulated seconds for more accurate minute tracking
+  const accumulatedSecondsRef = useRef(0);
+
   const updateStudyTime = useCallback(() => {
-    setStats((prev) => {
+    setState(prev => {
       if (!prev.sessionStartTime) return prev;
 
-      const elapsedMs = Date.now() - prev.sessionStartTime;
-      const elapsedMinutes = Math.floor(elapsedMs / 60000);
-      const previousMinutes = prev.studyTimeMinutes;
-      const newTotal = previousMinutes + elapsedMinutes;
+      const now = Date.now();
+      const elapsedMs = now - prev.sessionStartTime;
+      const elapsedSeconds = Math.floor(elapsedMs / 1000);
+      
+      // Accumulate seconds
+      accumulatedSecondsRef.current += elapsedSeconds;
+      
+      // Calculate full minutes from accumulated seconds
+      const fullMinutes = Math.floor(accumulatedSecondsRef.current / 60);
+      
+      if (fullMinutes === 0) {
+        // Update session start time but don't add minutes yet
+        return {
+          ...prev,
+          sessionStartTime: now,
+        };
+      }
+      
+      // Reset accumulated seconds (keep remainder)
+      accumulatedSecondsRef.current = accumulatedSecondsRef.current % 60;
 
-      // Check for new milestones
+      const previousMinutes = prev.studyTimeMinutes;
+      const newTotal = previousMinutes + fullMinutes;
+
+      console.log(`[StudyTime] Adding ${fullMinutes} minute(s). Total: ${newTotal} minutes`);
+
+      // Check for study time milestones
       for (let m = previousMinutes + 1; m <= newTotal; m++) {
-        if (ACHIEVEMENT_THRESHOLDS.studyTime.some((t) => t.minutes === m)) {
-          checkStudyTimeAchievements(m);
+        const threshold = ACHIEVEMENT_THRESHOLDS.studyTime.find(
+          t => t.minutes === m
+        );
+        if (threshold) {
+          console.log(`[StudyTime] Achievement unlocked: ${threshold.message}`);
+          setTimeout(() => {
+            addAchievement("study_time", threshold.message, threshold.emoji, threshold.xp);
+          }, 0);
         }
       }
 
       return {
         ...prev,
         studyTimeMinutes: newTotal,
-        sessionStartTime: Date.now(), // Reset to avoid double counting
+        sessionStartTime: now,
+        lastActiveDate: new Date().toISOString().split('T')[0],
       };
     });
-  }, [checkStudyTimeAchievements]);
+  }, [addAchievement]);
+
+  const recordSessionComplete = useCallback(() => {
+    setState(prev => ({
+      ...prev,
+      totalStudySessions: prev.totalStudySessions + 1,
+      sessionStartTime: null,
+    }));
+  }, []);
+
+  // ============================================
+  // STREAK
+  // ============================================
 
   const updateStreak = useCallback(() => {
     const today = new Date().toDateString();
-    setStats((prev) => {
-      if (prev.lastStudyDate === today) return prev;
+
+    setState(prev => {
+      if (prev.lastStudyDate === today) {
+        log(`Streak already updated today. Current streak: ${prev.streak}`);
+        return prev;
+      }
 
       const yesterday = new Date();
       yesterday.setDate(yesterday.getDate() - 1);
@@ -183,28 +509,169 @@ export function useAchievements() {
       let newStreak = 1;
       if (prev.lastStudyDate === yesterdayStr) {
         newStreak = prev.streak + 1;
+        log(`Continuing streak! New streak: ${newStreak}`);
+      } else {
+        log(`Streak reset. Starting fresh at day 1. Last study: ${prev.lastStudyDate}`);
       }
 
-      checkStreakAchievements(newStreak);
-
-      // Also update the user object in localStorage for Dashboard
-      const userData = localStorage.getItem("user");
-      if (userData) {
-        const user = JSON.parse(userData);
-        user.streak = newStreak;
-        localStorage.setItem("user", JSON.stringify(user));
+      // Check for streak milestone
+      const threshold = ACHIEVEMENT_THRESHOLDS.streak.find(
+        t => t.days === newStreak
+      );
+      if (threshold) {
+        log(`Streak achievement unlocked: ${threshold.message}`);
+        setTimeout(() => {
+          addAchievement("streak", threshold.message, threshold.emoji, threshold.xp);
+        }, 0);
       }
 
       return {
         ...prev,
         streak: newStreak,
         lastStudyDate: today,
+        lastActiveDate: new Date().toISOString().split('T')[0],
       };
     });
-  }, [checkStreakAchievements]);
+  }, [addAchievement]);
+
+  // ============================================
+  // DAILY LOGIN
+  // ============================================
+
+  const recordDailyLogin = useCallback(() => {
+    // Don't record until state is loaded from localStorage
+    if (!isLoaded) {
+      log('Daily login skipped - state not yet loaded');
+      return;
+    }
+    
+    // Use toDateString() for calendar-day comparison (same as updateStreak)
+    const today = new Date().toDateString();
+
+    setState(prev => {
+      // Already logged in today - compare using same format
+      if (prev.lastLoginDate === today) {
+        log(`Already logged in today. Total days: ${prev.totalDaysActive}`);
+        return prev;
+      }
+
+      const newTotalDays = prev.totalDaysActive + 1;
+      log(`Daily login recorded. Total days active: ${newTotalDays}`);
+
+      // Check for daily activity milestone
+      const threshold = ACHIEVEMENT_THRESHOLDS.dailyLogin.find(
+        t => t.totalDays === newTotalDays
+      );
+      if (threshold) {
+        log(`Daily login achievement unlocked: ${threshold.message}`);
+        setTimeout(() => {
+          addAchievement("daily_login", threshold.message, threshold.emoji, threshold.xp);
+        }, 0);
+      }
+
+      return {
+        ...prev,
+        lastLoginDate: today,
+        totalDaysActive: newTotalDays,
+        lastActiveDate: new Date().toISOString().split('T')[0],
+      };
+    });
+  }, [addAchievement, isLoaded]);
+
+  // ============================================
+  // LEARN WELCOME (Once per day when visiting Learn page)
+  // ============================================
+
+  const recordLearnWelcome = useCallback(() => {
+    // Don't record until state is loaded from localStorage
+    if (!isLoaded) {
+      log('Learn welcome skipped - state not yet loaded');
+      return;
+    }
+    
+    const today = new Date().toISOString().split("T")[0];
+
+    setState(prev => {
+      // Already welcomed today
+      if (prev.lastLearnWelcomeDate === today) {
+        log('Already welcomed on Learn page today');
+        return prev;
+      }
+
+      log('Learn page welcome! Showing achievement.');
+      
+      // Award XP for starting a learning session today
+      setTimeout(() => {
+        addAchievement("learn_welcome", "Amazing! Welcome, your learning journey begins.", "🌟", 5);
+      }, 0);
+
+      return {
+        ...prev,
+        lastLearnWelcomeDate: today,
+      };
+    });
+  }, [addAchievement, isLoaded]);
+
+  // ============================================
+  // SUBJECT ENGAGEMENT
+  // ============================================
+
+  const recordSubjectEngagement = useCallback((subject: string) => {
+    setState(prev => {
+      if (prev.subjectsEngaged.includes(subject)) {
+        log(`Subject already tracked: ${subject}`);
+        return prev;
+      }
+
+      const newSubjects = [...prev.subjectsEngaged, subject];
+      log(`New subject engaged: ${subject}. Total subjects: ${newSubjects.length}`);
+
+      // Check for diversity milestone
+      const threshold = ACHIEVEMENT_THRESHOLDS.subjectDiversity.find(
+        t => t.count === newSubjects.length
+      );
+      if (threshold) {
+        log(`Subject diversity achievement unlocked: ${threshold.message}`);
+        setTimeout(() => {
+          addAchievement("general", threshold.message, threshold.emoji, threshold.xp);
+        }, 0);
+      }
+
+      return {
+        ...prev,
+        subjectsEngaged: newSubjects,
+      };
+    });
+  }, [addAchievement]);
+
+  // ============================================
+  // ACHIEVEMENT MANAGEMENT
+  // ============================================
+
+  const markAsRead = useCallback((id: string) => {
+    setAchievements(prev =>
+      prev.map(a => (a.id === id ? { ...a, read: true } : a))
+    );
+  }, []);
+
+  const markAllAsRead = useCallback(() => {
+    setAchievements(prev => prev.map(a => ({ ...a, read: true })));
+  }, []);
+
+  const clearNewAchievement = useCallback(() => {
+    setNewAchievement(null);
+  }, []);
+
+  const clearLevelUpMessage = useCallback(() => {
+    setLevelUpMessage(null);
+  }, []);
+
+  // ============================================
+  // HELPER MESSAGES
+  // ============================================
 
   const getStreakMessage = useCallback(() => {
-    const daysToTarget = 7 - stats.streak;
+    const daysToTarget = 7 - state.streak;
     if (daysToTarget === 1) {
       return {
         message: "You're 1 day away from a 7-day streak. Keep it going!",
@@ -218,40 +685,91 @@ export function useAchievements() {
       };
     }
     return {
-      message: `${stats.streak} day streak! Keep the momentum going.`,
+      message: `${state.streak} day streak! Keep the momentum going.`,
       isAtRisk: false,
     };
-  }, [stats.streak]);
+  }, [state.streak]);
 
-  const markAsRead = useCallback((id: string) => {
-    setAchievements((prev) =>
-      prev.map((a) => (a.id === id ? { ...a, read: true } : a))
-    );
-  }, []);
+  const getEncouragingMessage = useCallback((): string => {
+    const today = new Date().toISOString().split('T')[0];
+    const daysSinceActive = getDaysBetween(state.lastActiveDate, today);
+    
+    if (daysSinceActive === 0) {
+      return "You're doing great today! Keep up the momentum.";
+    }
+    if (daysSinceActive <= DECAY_CONFIG.gracePeriodDays) {
+      return "Welcome back! Your progress is safe.";
+    }
+    if (daysSinceActive <= DECAY_CONFIG.freezePeriodDays) {
+      return "It's good to see you! Your progress is waiting for you.";
+    }
+    return "Welcome back! Every step forward counts, no matter how small.";
+  }, [state.lastActiveDate]);
 
-  const markAllAsRead = useCallback(() => {
-    setAchievements((prev) => prev.map((a) => ({ ...a, read: true })));
-  }, []);
+  // ============================================
+  // COMPUTED VALUES
+  // ============================================
 
-  const clearNewAchievement = useCallback(() => {
-    setNewAchievement(null);
-  }, []);
-
-  const unreadCount = achievements.filter((a) => !a.read).length;
+  const currentLevel = getLevelFromXP(state.currentXP);
+  const nextLevel = getNextLevel(currentLevel);
+  const progressInfo = getProgressToNextLevel(state.currentXP);
+  const highestLevelAchieved = LEVELS.find(l => l.id === state.highestLevelEver) || LEVELS[0];
+  const unreadCount = achievements.filter(a => !a.read).length;
 
   return {
+    // Level State
+    currentXP: state.currentXP,
+    currentLevel,
+    nextLevel,
+    progressToNextLevel: progressInfo.progress,
+    xpInCurrentLevel: progressInfo.xpInLevel,
+    xpNeededForNextLevel: progressInfo.xpNeeded,
+    highestLevelEver: highestLevelAchieved,
+    totalSessions: state.totalStudySessions,
+    subjectsEngaged: state.subjectsEngaged,
+    isLoaded,
+    
+    // Stats
+    stats: {
+      questionsAsked: state.questionsAsked,
+      studyTimeMinutes: state.studyTimeMinutes,
+      streak: state.streak,
+      totalDaysActive: state.totalDaysActive,
+      lastStudyDate: state.lastStudyDate,
+      sessionStartTime: state.sessionStartTime,
+    },
+    
+    // Achievements
     achievements,
-    stats,
     newAchievement,
     unreadCount,
-    incrementQuestions,
+    
+    // Level notifications
+    levelUpMessage,
+    clearLevelUpMessage,
+    
+    // Actions
+    addXP,
+    recordQuestion,
     startStudySession,
     updateStudyTime,
+    recordSessionComplete,
     updateStreak,
-    getStreakMessage,
+    recordDailyLogin,
+    recordLearnWelcome,
+    recordSubjectEngagement,
+    
+    // Achievement actions
+    addAchievement,
     markAsRead,
     markAllAsRead,
     clearNewAchievement,
-    addAchievement,
+    
+    // Helpers
+    getStreakMessage,
+    getEncouragingMessage,
+    
+    // Constants
+    allLevels: LEVELS,
   };
 }

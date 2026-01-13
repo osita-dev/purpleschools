@@ -1,21 +1,22 @@
 import { Link, useLocation } from "react-router-dom";
-import { Home, BookOpen, User, GraduationCap } from "lucide-react";
+import { Home, BookOpen, User, GraduationCap, Info } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { motion } from "framer-motion";
 import { Avatar } from "@/components/shared/Avatar";
 import { NotificationCenter } from "@/components/notifications/NotificationCenter";
-import { useAchievementsContext } from "@/contexts/AchievementsContext";
+import { useLevelProgressContext } from "@/contexts/LevelProgressContext";
 
 const navItems = [
   { icon: Home, label: "Home", path: "/dashboard" },
   { icon: BookOpen, label: "Learn", path: "/learn" },
+  { icon: Info, label: "About", path: "/about" },
   { icon: User, label: "Profile", path: "/profile" },
 ];
 
 export function Header() {
   const location = useLocation();
   const userName = localStorage.getItem("userName") || "Student";
-  const { achievements, unreadCount, markAsRead, markAllAsRead } = useAchievementsContext();
+  const { achievements, unreadCount, markAsRead, markAllAsRead } = useLevelProgressContext();
 
   return (
     <header className="hidden md:block fixed top-0 left-0 right-0 bg-card/95 backdrop-blur-md border-b border-border z-40">

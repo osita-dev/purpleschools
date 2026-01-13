@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate} from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -25,8 +25,8 @@ export default function AuthPage() {
       email: formData.email,
       school: formData.school || "My School",
       className: formData.className || "Year 9",
-      streak: 3,
-      daysActive: 7,
+      streak: 0,
+      daysActive: 0,
     }));
     navigate("/dashboard");
   };

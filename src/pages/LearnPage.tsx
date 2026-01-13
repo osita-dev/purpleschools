@@ -9,7 +9,7 @@ import { MicroWinModal } from "@/components/modals/MicroWinModal";
 import { BottomNav } from "@/components/layout/BottomNav";
 import { Header } from "@/components/layout/Header";
 import { Send, Sparkles, ArrowLeft, Lightbulb } from "lucide-react";
-import { useAchievementsContext } from "@/contexts/AchievementsContext";
+import { useLevelProgressContext } from "@/contexts/LevelProgressContext";
 
 interface Message {
   id: string;
@@ -33,17 +33,32 @@ const aiResponses: Record<string, string> = {
   essay: "Essay writing is a skill you can definitely master! ✍️\n\nHere's my simple structure:\n\n1. **Introduction** - Hook your reader, state your main point\n2. **Body paragraphs** - One idea per paragraph with evidence\n3. **Conclusion** - Summarize and leave a lasting impression\n\nThe secret? Start with a plan! What topic is your essay about?",
 };
 
+// Map topics to subjects for diversity tracking
+const topicToSubject: Record<string, string> = {
+  quadratic: "Mathematics",
+  equation: "Mathematics",
+  photosynthesis: "Science",
+  plant: "Science",
+  shakespeare: "English",
+  theme: "English",
+  essay: "English",
+  write: "English",
+  writing: "English",
+};
+
 export default function LearnPage() {
   const navigate = useNavigate();
-  const {
-    incrementQuestions,
-    startStudySession,
-    updateStudyTime,
-    updateStreak,
-    newAchievement,
-    clearNewAchievement
-  } = useAchievementsContext();
-
+  const { 
+    recordQuestion, 
+    startStudySession, 
+    updateStudyTime, 
+    recordLearnWelcome,
+    recordSubjectEngagement,
+    newAchievement, 
+    clearNewAchievement,
+    isLoaded
+  } = useLevelProgressContext();
+  
   const [messages, setMessages] = useState<Message[]>([
     {
       id: "1",
@@ -58,8 +73,12 @@ export default function LearnPage() {
   const [microWinMessage, setMicroWinMessage] = useState("");
   const [microWinEmoji, setMicroWinEmoji] = useState("⭐");
   const messagesEndRef = useRef<HTMLDivElement>(null);
-  // const studyTimerRef = useRef<number | null>(null);
-  const studyTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const studyTimerRef = useRef<NodeJS.Timeout | null>(null);
+  
+  // Queue for showing modals one after another
+  const [modalQueue, setModalQueue] = useState<Array<{ message: string; emoji: string }>>([]);
+  const [isShowingModal, setIsShowingModal] = useState(false);
+
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
@@ -69,35 +88,53 @@ export default function LearnPage() {
   }, [messages]);
 
   // Start study session and update streak when page loads
+  // Start study session timer
   useEffect(() => {
     startStudySession();
-    updateStreak();
-
-    // Update study time every minute
+    
+    // Update study time every 10 seconds for more responsive tracking
     studyTimerRef.current = setInterval(() => {
       updateStudyTime();
-    }, 60000);
+    }, 10000);
 
     return () => {
       if (studyTimerRef.current) {
         clearInterval(studyTimerRef.current);
       }
-      updateStudyTime(); // Save on unmount
+      updateStudyTime();
     };
-  }, [startStudySession, updateStreak, updateStudyTime]);
+  }, [startStudySession, updateStudyTime]);
 
-  // Show modal when new achievement is earned
+  // Record Learn page welcome ONLY after state is loaded
+  useEffect(() => {
+    if (isLoaded) {
+      recordLearnWelcome();
+    }
+  }, [isLoaded, recordLearnWelcome]);
+
+  // Add new achievement to queue
   useEffect(() => {
     if (newAchievement) {
-      setMicroWinMessage(newAchievement.message);
-      setMicroWinEmoji(newAchievement.emoji);
-      setTimeout(() => setShowMicroWin(true), 500);
+      setModalQueue(prev => [...prev, { message: newAchievement.message, emoji: newAchievement.emoji }]);
+      clearNewAchievement();
     }
-  }, [newAchievement]);
+  }, [newAchievement, clearNewAchievement]);
+
+  // Show modals one after another
+  useEffect(() => {
+    if (modalQueue.length > 0 && !isShowingModal) {
+      const next = modalQueue[0];
+      setMicroWinMessage(next.message);
+      setMicroWinEmoji(next.emoji);
+      setIsShowingModal(true);
+      setTimeout(() => setShowMicroWin(true), 300);
+    }
+  }, [modalQueue, isShowingModal]);
 
   const handleCloseMicroWin = () => {
     setShowMicroWin(false);
-    clearNewAchievement();
+    setIsShowingModal(false);
+    setModalQueue(prev => prev.slice(1)); // Remove shown modal from queue
   };
 
   const getAIResponse = (userMessage: string): string => {
@@ -117,6 +154,16 @@ export default function LearnPage() {
     return aiResponses.default;
   };
 
+  const detectSubject = (userMessage: string): string | null => {
+    const lower = userMessage.toLowerCase();
+    for (const [keyword, subject] of Object.entries(topicToSubject)) {
+      if (lower.includes(keyword)) {
+        return subject;
+      }
+    }
+    return null;
+  };
+
   const handleSend = async () => {
     if (!input.trim()) return;
 
@@ -130,9 +177,15 @@ export default function LearnPage() {
     setMessages((prev) => [...prev, userMessage]);
     setInput("");
     setIsTyping(true);
-
-    // Track question and check for achievements
-    incrementQuestions();
+    
+    // Track question and award XP
+    recordQuestion();
+    
+    // Track subject diversity
+    const subject = detectSubject(input);
+    if (subject) {
+      recordSubjectEngagement(subject);
+    }
 
     // Simulate AI thinking
     await new Promise((resolve) => setTimeout(resolve, 1500));
@@ -213,8 +266,9 @@ export default function LearnPage() {
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -10 }}
-                className={`flex gap-3 ${message.role === "user" ? "flex-row-reverse" : ""
-                  }`}
+                className={`flex gap-3 ${
+                  message.role === "user" ? "flex-row-reverse" : ""
+                }`}
               >
                 {message.role === "assistant" ? (
                   <div className="w-10 h-10 gradient-primary rounded-xl flex items-center justify-center flex-shrink-0 shadow-soft">
@@ -224,10 +278,11 @@ export default function LearnPage() {
                   <Avatar name="You" size="md" className="flex-shrink-0" />
                 )}
                 <Card
-                  className={`max-w-[80%] ${message.role === "user"
+                  className={`max-w-[80%] ${
+                    message.role === "user"
                       ? "bg-primary text-primary-foreground"
                       : "bg-card"
-                    }`}
+                  }`}
                 >
                   <div className="p-4">
                     <p className="whitespace-pre-wrap text-sm leading-relaxed">
