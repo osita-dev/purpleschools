@@ -327,8 +327,13 @@ export function useAchievements() {
   // ADD XP (Core function)
   // ============================================
 
+  
   const addXP = useCallback((amount: number, source?: string) => {
     const today = new Date().toISOString().split('T')[0];
+
+     if (source) {
+    console.log(`[XP] +${amount} XP from ${source}`);
+  }
     
     setState(prev => {
       const oldLevel = getLevelFromXP(prev.currentXP);

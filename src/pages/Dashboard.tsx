@@ -144,7 +144,8 @@ export default function Dashboard() {
   const streakInfo = getStreakMessage();
   const microWinsCount = achievements.length;
   const studyMinutes = stats.studyTimeMinutes;
-  const progressPercent = Math.min(100, Math.round((studyMinutes / 30) * 100));
+  const  progressPercent = Math.min(100, Math.round((studyMinutes / 30) * 100));
+  console.log(progressPercent);
 
   const motivationalMessages = [
     "Every small step counts. You're doing great! 💪",
@@ -304,6 +305,7 @@ export default function Dashboard() {
                     </div>
                     <span className="text-xs text-muted-foreground font-medium">
                       {currentXP} XP
+                      
                     </span>
                   </div>
                   <p className="text-xs text-muted-foreground mt-2">

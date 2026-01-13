@@ -231,7 +231,7 @@ export default function AboutPage() {
               viewport={{ once: true }}
               className="grid grid-cols-2 gap-4"
             >
-              {values.map((value, index) => (
+              {values.map((value) => (
                 <div
                   key={value.title}
                   className="p-4 bg-card rounded-xl border border-border"
