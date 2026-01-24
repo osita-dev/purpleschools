@@ -10,7 +10,7 @@ import LearnPage from "./pages/LearnPage";
 import ProfilePage from "./pages/ProfilePage";
 import AboutPage from "./pages/AboutPage";
 import NotFound from "./pages/NotFound";
-import LandingPage from "./pages/landingpage";
+import LandingPage from "./pages/LandingPage";
 
 const queryClient = new QueryClient();
 
