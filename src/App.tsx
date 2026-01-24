@@ -10,6 +10,7 @@ import LearnPage from "./pages/LearnPage";
 import ProfilePage from "./pages/ProfilePage";
 import AboutPage from "./pages/AboutPage";
 import NotFound from "./pages/NotFound";
+import LandingPage from "./pages/landingpage";
 
 const queryClient = new QueryClient();
 
@@ -21,11 +22,13 @@ const App = () => (
         <Sonner />
         <BrowserRouter>
           <Routes>
-            <Route path="/" element={<AuthPage />} />
+            <Route path="/" element={<LandingPage/>} />
+            <Route path="/welcome" element={<LandingPage/>} />
+            <Route path="/about" element={<AboutPage />} />
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/learn" element={<LearnPage />} />
             <Route path="/profile" element={<ProfilePage />} />
-            <Route path="/about" element={<AboutPage />} />
+            <Route path="/auth" element={<AuthPage />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>
