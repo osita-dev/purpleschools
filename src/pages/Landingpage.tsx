@@ -1,8 +1,7 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useNavigate } from "react-router-dom";
-// import { Header } from "@/components/layout/Header";
-// import { BottomNav } from "@/components/layout/BottomNav";
+
 import { 
   Brain, 
   Heart, 
@@ -90,7 +89,6 @@ export default function LandingPage() {
   
   return (
     <div className="min-h-screen bg-background">
-      {/* <Header /> */}
       
       {/* Hero Section */}
       <section className="relative pt-24 pb-16 md:pt-32 md:pb-24 overflow-hidden">
@@ -273,8 +271,6 @@ export default function LandingPage() {
         </div>
       </section>
 
-      <div className="pb-20 md:pb-0" />
-      {/* <BottomNav /> */}
 
       {/* Demo Video Modal */}
       <AnimatePresence>
