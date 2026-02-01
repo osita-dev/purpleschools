@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useNavigate } from "react-router-dom";
-import { BottomNav } from "@/components/layout/BottomNav";
 import aboutBackground from "@/assets/about-background.jpg";
 import { 
   Brain, 
@@ -276,7 +275,6 @@ export default function LandingPage() {
       </section>
 
       <div className="pb-20 md:pb-0" />
-      <BottomNav />
 
       {/* Demo Video Modal */}
       <AnimatePresence>
