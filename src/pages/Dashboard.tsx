@@ -11,14 +11,14 @@ import { LevelUpModal } from "@/components/modals/LevelUpModal";
 import { BottomNav } from "@/components/layout/BottomNav";
 import { Header } from "@/components/layout/Header";
 import { useLevelProgressContext } from "@/contexts/LevelProgressContext";
-import { 
-  MessageCircle, 
-  Flame, 
-  Calendar, 
-  Trophy, 
-  Sparkles, 
+import {
+  MessageCircle,
+  Flame,
+  Calendar,
+  Trophy,
+  Sparkles,
   ChevronRight,
-  BookOpen 
+  BookOpen
 } from "lucide-react";
 
 interface User {
@@ -37,15 +37,15 @@ export default function Dashboard() {
   const [showStreak, setShowStreak] = useState(false);
   const [microWinMessage, setMicroWinMessage] = useState("");
   const [microWinEmoji, setMicroWinEmoji] = useState("🎯");
-  
-  const { 
-    currentLevel, 
-    progressToNextLevel, 
+
+  const {
+    currentLevel,
+    progressToNextLevel,
     currentXP,
     stats,
     achievements,
-    levelUpMessage, 
-    clearLevelUpMessage, 
+    levelUpMessage,
+    clearLevelUpMessage,
     getEncouragingMessage,
     getStreakMessage,
     recordDailyLogin,
@@ -59,30 +59,55 @@ export default function Dashboard() {
   const [modalQueue, setModalQueue] = useState<Array<{ message: string; emoji: string }>>([]);
   const [isShowingModal, setIsShowingModal] = useState(false);
 
+  // useEffect(() => {
+  //   const userData = localStorage.getItem("user");
+  //   if (userData) {
+  //     const parsed = JSON.parse(userData);
+  //     // Sync streak from unified context
+  //     if (stats.streak > 0) {
+  //       parsed.streak = stats.streak;
+  //     }
+  //     setUser(parsed);
+
+  //     // Show streak modal at most once per day (avoid popping every navigation)
+  //     if (parsed.streak >= 5 && parsed.streak < 7) {
+  //       const today = new Date().toISOString().split("T")[0];
+  //       const lastShown = localStorage.getItem("purpleschool_streak_modal_last_shown");
+
+  //       if (lastShown !== today) {
+  //         localStorage.setItem("purpleschool_streak_modal_last_shown", today);
+  //         setTimeout(() => setShowStreak(true), 1000);
+  //       }
+  //     }
+  //   } else {
+  //     navigate("/");
+  //   }
+  // }, [navigate, stats.streak]);
+
   useEffect(() => {
-    const userData = localStorage.getItem("user");
-    if (userData) {
-      const parsed = JSON.parse(userData);
-      // Sync streak from unified context
-      if (stats.streak > 0) {
-        parsed.streak = stats.streak;
-      }
-      setUser(parsed);
+    const fetchUser = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        if (!token) return navigate("/"); // no token → redirect
 
-      // Show streak modal at most once per day (avoid popping every navigation)
-      if (parsed.streak >= 5 && parsed.streak < 7) {
-        const today = new Date().toISOString().split("T")[0];
-        const lastShown = localStorage.getItem("purpleschool_streak_modal_last_shown");
+        const res = await fetch("https://purpleshoolserver.onrender.com/profile/me", {
+          headers: { Authorization: `Bearer ${token}` },
+        });
 
-        if (lastShown !== today) {
-          localStorage.setItem("purpleschool_streak_modal_last_shown", today);
-          setTimeout(() => setShowStreak(true), 1000);
-        }
+        if (!res.ok) throw new Error("Failed to fetch user");
+
+        const data = await res.json();
+        setUser(data.data); // remember backend wraps user in data
+      } catch (err: any) {
+        console.error(err);
+        navigate("/");
       }
-    } else {
-      navigate("/");
-    }
-  }, [navigate, stats.streak]);
+    };
+
+    fetchUser();
+  }, [navigate]);
+
+
 
   // Record daily login and update streak when Dashboard loads (with delay to allow state to settle)
   // Only call updateStreak - daily login is handled separately after streak modal closes
@@ -91,14 +116,14 @@ export default function Dashboard() {
       const timer = setTimeout(() => {
         updateStreak();
       }, 100);
-      
+
       return () => clearTimeout(timer);
     }
   }, [isLoaded, updateStreak]);
 
   // Call recordDailyLogin only after streak modal has been shown (when queue is empty and not showing)
   const [hasCalledDailyLogin, setHasCalledDailyLogin] = useState(false);
-  
+
   useEffect(() => {
     if (isLoaded && !hasCalledDailyLogin && modalQueue.length === 0 && !isShowingModal && !showMicroWin) {
       // Wait a bit after streak modal closes, then trigger daily login
@@ -106,7 +131,7 @@ export default function Dashboard() {
         recordDailyLogin();
         setHasCalledDailyLogin(true);
       }, 600);
-      
+
       return () => clearTimeout(timer);
     }
   }, [isLoaded, hasCalledDailyLogin, modalQueue.length, isShowingModal, showMicroWin, recordDailyLogin]);
@@ -144,7 +169,7 @@ export default function Dashboard() {
   const streakInfo = getStreakMessage();
   const microWinsCount = achievements.length;
   const studyMinutes = stats.studyTimeMinutes;
-  const  progressPercent = Math.min(100, Math.round((studyMinutes / 30) * 100));
+  const progressPercent = Math.min(100, Math.round((studyMinutes / 30) * 100));
   console.log(progressPercent);
 
   const motivationalMessages = [
@@ -159,7 +184,7 @@ export default function Dashboard() {
   return (
     <div className="min-h-screen gradient-calm pb-24 md:pb-8 md:pt-24">
       <Header />
-      
+
       <main className="max-w-2xl mx-auto px-4 py-6 md:py-8">
         {/* Welcome Section */}
         <motion.div
@@ -168,10 +193,13 @@ export default function Dashboard() {
           className="mb-8"
         >
           <div className="flex items-center gap-4 mb-4">
-            <Avatar name={user.name} size="lg" />
+
+            <Avatar name={user?.name || "Learner"} size="lg" />
+
             <div>
               <h1 className="text-2xl md:text-3xl font-bold text-foreground">
-                Hi, {user.name.split(" ")[0]}! 👋
+                Hi, {user?.name ? user.name.split(" ")[0] : "Learner"}! 👋
+
               </h1>
               <p className="text-muted-foreground">
                 {user.className} • {user.school}
@@ -196,7 +224,7 @@ export default function Dashboard() {
           transition={{ delay: 0.1 }}
           className="grid grid-cols-3 gap-3 mb-8"
         >
-          <Card 
+          <Card
             className="text-center cursor-pointer hover:shadow-soft transition-shadow"
             onClick={() => setShowStreak(true)}
           >
@@ -209,7 +237,7 @@ export default function Dashboard() {
             </CardContent>
           </Card>
 
-          <Card 
+          <Card
             className="text-center cursor-pointer hover:shadow-soft transition-shadow"
             onClick={() => {
               const loginAchievement = achievements.find(a => a.type === "daily_login");
@@ -229,7 +257,7 @@ export default function Dashboard() {
             </CardContent>
           </Card>
 
-          <Card 
+          <Card
             className="text-center cursor-pointer hover:shadow-soft transition-shadow"
             onClick={() => setShowMicroWin(true)}
           >
@@ -305,7 +333,7 @@ export default function Dashboard() {
                     </div>
                     <span className="text-xs text-muted-foreground font-medium">
                       {currentXP} XP
-                      
+
                     </span>
                   </div>
                   <p className="text-xs text-muted-foreground mt-2">

@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { Home, BookOpen, User, GraduationCap, Info } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -15,8 +16,17 @@ const navItems = [
 
 export function Header() {
   const location = useLocation();
-  const userName = localStorage.getItem("userName") || "Student";
+    const [userName, setUserName] = useState("Student");
   const { achievements, unreadCount, markAsRead, markAllAsRead } = useLevelProgressContext();
+
+
+useEffect(() => {
+    const stored = localStorage.getItem("user");
+    if (stored) {
+      const user = JSON.parse(stored);
+      setUserName(user?.name || "Student");
+    }
+  }, []);
 
   return (
     <header className="hidden md:block fixed top-0 left-0 right-0 bg-card/95 backdrop-blur-md border-b border-border z-40">
@@ -74,7 +84,7 @@ export function Header() {
             onMarkAllAsRead={markAllAsRead}
           />
           <Link to="/profile" className="flex items-center gap-2">
-            <Avatar name={userName} size="sm" />
+             <Avatar name={userName || "Learner"} size="sm" />
           </Link>
         </div>
       </div>

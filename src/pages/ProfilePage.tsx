@@ -1,9 +1,9 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { motion} from "framer-motion";
+import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Card, CardContent} from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Avatar } from "@/components/shared/Avatar";
 import { BottomNav } from "@/components/layout/BottomNav";
 import { Header } from "@/components/layout/Header";
@@ -14,13 +14,13 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { useLevelProgressContext } from "@/contexts/LevelProgressContext";
-import { 
-  ArrowLeft, 
-  User, 
-  School, 
-  BookOpen, 
-  Bell, 
-  Shield, 
+import {
+  ArrowLeft,
+  User,
+  School,
+  BookOpen,
+  Bell,
+  Shield,
   LogOut,
   ChevronRight,
   Check,
@@ -79,31 +79,62 @@ export default function ProfilePage() {
       default: return "bg-success/10 text-success";
     }
   };
-
   useEffect(() => {
-    const userData = localStorage.getItem("user");
-    if (userData) {
-      const parsed = JSON.parse(userData);
-      setUser(parsed);
-      setFormData({
-        name: parsed.name,
-        school: parsed.school,
-        className: parsed.className,
-      });
-    } else {
-      navigate("/");
-    }
-  }, [navigate]);
+    const fetchProfile = async () => {
+      try {
+        const token = localStorage.getItem("token");
 
-  const handleSave = () => {
-    if (user) {
-      const updatedUser = { ...user, ...formData };
-      localStorage.setItem("user", JSON.stringify(updatedUser));
-      setUser(updatedUser);
+        const res = await fetch("https://purpleshoolserver.onrender.com/profile/me", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        const data = await res.json();
+        setUser(data.data);
+        setFormData({
+          name: data.data.name,
+          school: data.data.school,
+          className: data.data.className,
+        });
+      } catch (err) {
+        navigate("/");
+      }
+    };
+
+    fetchProfile();
+  }, []);
+
+  const handleSave = async () => {
+    try {
+      const token = localStorage.getItem("token");
+
+      const res = await fetch("https://purpleshoolserver.onrender.com/profile/me", {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(formData),
+      });
+
+      if (!res.ok) throw new Error("Failed to update profile");
+
+      const data = await res.json();
+
+      setUser(data.user);
+      localStorage.setItem("user", JSON.stringify(data.user));
       setIsEditing(false);
+
       toast({
-        title: "Profile updated!",
+        title: "Profile updated",
         description: "Your changes have been saved.",
+      });
+    } catch (err) {
+      toast({
+        title: "Update failed",
+        description: "Please try again",
+        variant: "destructive",
       });
     }
   };
@@ -286,9 +317,8 @@ export default function ProfilePage() {
                           key={achievement.id}
                           initial={{ opacity: 0, x: -10 }}
                           animate={{ opacity: 1, x: 0 }}
-                          className={`p-3 rounded-xl mb-2 cursor-pointer transition-colors ${
-                            achievement.read ? "bg-muted/30" : "bg-primary/5"
-                          }`}
+                          className={`p-3 rounded-xl mb-2 cursor-pointer transition-colors ${achievement.read ? "bg-muted/30" : "bg-primary/5"
+                            }`}
                           onClick={() => markAsRead(achievement.id)}
                         >
                           <div className="flex items-start gap-3">

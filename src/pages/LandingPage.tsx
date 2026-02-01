@@ -1,7 +1,8 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useNavigate } from "react-router-dom";
-
+import { BottomNav } from "@/components/layout/BottomNav";
+import aboutBackground from "@/assets/about-background.jpg";
 import { 
   Brain, 
   Heart, 
@@ -92,9 +93,12 @@ export default function LandingPage() {
       
       {/* Hero Section */}
       <section className="relative pt-24 pb-16 md:pt-32 md:pb-24 overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-background to-accent/10" />
-        <div className="absolute top-20 left-10 w-72 h-72 bg-primary/20 rounded-full blur-3xl" />
-        <div className="absolute bottom-10 right-10 w-96 h-96 bg-accent/20 rounded-full blur-3xl" />
+        {/* Background image with dark overlay */}
+        <div 
+          className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+          style={{ backgroundImage: `url(${aboutBackground})` }}
+        />
+        <div className="absolute inset-0 bg-overlay/50" />
         
         <div className="container relative z-10 px-4 mx-auto max-w-6xl">
           <motion.div
@@ -103,16 +107,16 @@ export default function LandingPage() {
             transition={{ duration: 0.6 }}
             className="text-center"
           >
-            <div className="inline-flex items-center gap-2 px-4 py-2 mb-6 rounded-full bg-primary/10 border border-primary/20">
-              <Sparkles className="w-4 h-4 text-primary" />
-              <span className="text-sm font-medium text-primary">Welcome to Purple School</span>
+            <div className="inline-flex items-center gap-2 px-4 py-2 mb-6 rounded-full bg-primary-foreground/20 border border-primary-foreground/30">
+              <Sparkles className="w-4 h-4 text-primary-foreground" />
+              <span className="text-sm font-medium text-primary-foreground">Welcome to Purple School</span>
             </div>
             
-            <h1 className="text-4xl md:text-6xl font-bold mb-6 bg-gradient-to-r from-primary via-purple-500 to-accent bg-clip-text text-transparent">
+            <h1 className="text-4xl md:text-6xl font-bold mb-6 text-primary-foreground">
               Learning Without Limits
             </h1>
             
-            <p className="text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto mb-8">
+            <p className="text-lg md:text-xl text-primary-foreground/90 max-w-3xl mx-auto mb-8">
               Purple School is a revolutionary AI-powered learning platform designed specifically for 
               secondary school students. We believe every student deserves a safe, encouraging, and 
               personalized learning experience.
@@ -197,7 +201,7 @@ export default function LandingPage() {
       </section>
 
       {/* Mission Section */}
-      <section className="py-16 md:py-24 bg-gradient-to-br from-primary/5 via-background to-accent/5">
+      <section className="py-16 md:py-24 bg-muted/30">
         <div className="container px-4 mx-auto max-w-6xl">
           <div className="grid md:grid-cols-2 gap-12 items-center">
             <motion.div
@@ -251,7 +255,7 @@ export default function LandingPage() {
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="text-center p-8 md:p-12 bg-gradient-to-br from-primary/10 via-primary/5 to-accent/10 rounded-3xl border border-primary/20"
+            className="text-center p-8 md:p-12 bg-primary/5 rounded-3xl border border-border"
           >
             <Sparkles className="w-12 h-12 text-primary mx-auto mb-6" />
             <h2 className="text-2xl md:text-3xl font-bold mb-4">Ready to Start Your Learning Journey?</h2>
@@ -271,6 +275,8 @@ export default function LandingPage() {
         </div>
       </section>
 
+      <div className="pb-20 md:pb-0" />
+      <BottomNav />
 
       {/* Demo Video Modal */}
       <AnimatePresence>
@@ -279,7 +285,7 @@ export default function LandingPage() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm"
+            className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-overlay/80 backdrop-blur-sm"
             onClick={() => setShowDemo(false)}
           >
             <motion.div
@@ -292,9 +298,9 @@ export default function LandingPage() {
             >
               <button
                 onClick={() => setShowDemo(false)}
-                className="absolute top-4 right-4 z-10 p-2 bg-black/50 hover:bg-black/70 rounded-full transition-colors"
+                className="absolute top-4 right-4 z-10 p-2 bg-overlay/50 hover:bg-overlay/70 rounded-full transition-colors"
               >
-                <X className="w-5 h-5 text-white" />
+                <X className="w-5 h-5 text-primary-foreground" />
               </button>
               <iframe
                 src={`https://www.youtube.com/embed/${youtubeVideoId}?autoplay=1&rel=0`}

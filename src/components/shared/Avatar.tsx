@@ -2,7 +2,7 @@ import { cn } from "@/lib/utils";
 
 interface AvatarProps {
   src?: string;
-  name: string;
+  name?: string;
   size?: "sm" | "md" | "lg" | "xl";
   className?: string;
 }
@@ -15,8 +15,15 @@ const sizeClasses = {
 };
 
 export function Avatar({ src, name, size = "md", className }: AvatarProps) {
-  const initials = name
+  // Guarantee a safe string
+  const safeName =
+    typeof name === "string" && name.trim().length > 0
+      ? name
+      : "User";
+
+  const initials = safeName
     .split(" ")
+    .filter(Boolean)
     .map((n) => n[0])
     .join("")
     .toUpperCase()
@@ -26,7 +33,7 @@ export function Avatar({ src, name, size = "md", className }: AvatarProps) {
     return (
       <img
         src={src}
-        alt={name}
+        alt={safeName}
         className={cn(
           "rounded-full object-cover ring-2 ring-primary/20",
           sizeClasses[size],
