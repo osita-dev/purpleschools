@@ -12,33 +12,42 @@ import AboutPage from "./pages/AboutPage";
 import NotFound from "./pages/NotFound";
 import LandingPage from "./pages/LandingPage";
 import ProtectedRoute from "./components/ProtectedRoute";
+import { useRegisterSW } from "virtual:pwa-register/react";
 
 const queryClient = new QueryClient();
 
-const App = () => (
-  <QueryClientProvider client={queryClient}>
-    <TooltipProvider>
-      <LevelProgressProvider>
-        <Toaster />
-        <Sonner />
-        <BrowserRouter>
-          <Routes>
-            <Route path="/" element={<LandingPage />} />
-            <Route path="/welcome" element={<LandingPage />} />
-            <Route element={<ProtectedRoute />}>
-              <Route path="/about" element={<AboutPage />} />
-              <Route path="/dashboard" element={<Dashboard />} />
-              <Route path="/learn" element={<LearnPage />} />
-              <Route path="/profile" element={<ProfilePage />} />
-            </Route>
+export default function App() {
 
-            <Route path="/auth" element={<AuthPage />} />
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-        </BrowserRouter>
-      </LevelProgressProvider>
-    </TooltipProvider>
-  </QueryClientProvider>
-);
+  const { updateServiceWorker } = useRegisterSW({
+    onNeedRefresh() {
+      updateServiceWorker(true);
+    }
+  });
 
-export default App;
+  return (
+    <QueryClientProvider client={queryClient}>
+      <TooltipProvider>
+        <LevelProgressProvider>
+          <Toaster />
+          <Sonner />
+          <BrowserRouter>
+            <Routes>
+              <Route path="/" element={<LandingPage />} />
+              <Route path="/welcome" element={<LandingPage />} />
+
+              <Route element={<ProtectedRoute />}>
+                <Route path="/about" element={<AboutPage />} />
+                <Route path="/dashboard" element={<Dashboard />} />
+                <Route path="/learn" element={<LearnPage />} />
+                <Route path="/profile" element={<ProfilePage />} />
+              </Route>
+
+              <Route path="/auth" element={<AuthPage />} />
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+          </BrowserRouter>
+        </LevelProgressProvider>
+      </TooltipProvider>
+    </QueryClientProvider>
+  );
+}

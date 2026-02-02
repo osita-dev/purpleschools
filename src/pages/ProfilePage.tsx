@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
-import { useMutation, useQueryClient,useQuery } from "@tanstack/react-query";
+import { useMutation,useQuery } from "@tanstack/react-query";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent } from "@/components/ui/card";
 import { Avatar } from "@/components/shared/Avatar";
@@ -44,7 +44,6 @@ export default function ProfilePage() {
   const { achievements, unreadCount, markAsRead, markAllAsRead } = useLevelProgressContext();
   const [user, setUser] = useState<User | null>(null);
   const [isEditing, setIsEditing] = useState(false);
-  const queryClient = useQueryClient();
   const [formData, setFormData] = useState({
     name: "",
     school: "",
