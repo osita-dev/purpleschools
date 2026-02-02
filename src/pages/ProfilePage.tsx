@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQueryClient,useQuery } from "@tanstack/react-query";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent } from "@/components/ui/card";
 import { Avatar } from "@/components/shared/Avatar";
@@ -44,7 +44,7 @@ export default function ProfilePage() {
   const { achievements, unreadCount, markAsRead, markAllAsRead } = useLevelProgressContext();
   const [user, setUser] = useState<User | null>(null);
   const [isEditing, setIsEditing] = useState(false);
-  
+  const queryClient = useQueryClient();
   const [formData, setFormData] = useState({
     name: "",
     school: "",
@@ -115,39 +115,52 @@ export default function ProfilePage() {
     if (isError) navigate("/");
   }, [isError]);
 
-  const handleSave = async () => {
-    try {
-      const token = localStorage.getItem("token");
+  const updateProfileMutation = useMutation({
+  mutationFn: async (updatedData: any) => {
+    const token = localStorage.getItem("token");
 
-      const res = await fetch("https://purpleshoolserver.onrender.com/profile/me", {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify(formData),
-      });
+    const res = await fetch("https://purpleshoolserver.onrender.com/profile/me", {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify(updatedData),
+    });
 
-      if (!res.ok) throw new Error("Failed to update profile");
+    if (!res.ok) throw new Error("Failed to update profile");
 
-      const data = await res.json();
+    return res.json();
+  },
 
-      setUser(data.user);
-      localStorage.setItem("user", JSON.stringify(data.user));
-      setIsEditing(false);
+  onSuccess: (data) => {
+    setUser(data.user);
 
-      toast({
-        title: "Profile updated",
-        description: "Your changes have been saved.",
-      });
-    } catch (err) {
-      toast({
-        title: "Update failed",
-        description: "Please try again",
-        variant: "destructive",
-      });
-    }
-  };
+    localStorage.setItem("user", JSON.stringify(data.user));
+
+    // 🔥 THIS IS THE IMPORTANT PART
+   
+   
+    setIsEditing(false);
+
+    toast({
+      title: "Profile updated",
+      description: "Your changes have been saved.",
+    });
+  },
+
+  onError: () => {
+    toast({
+      title: "Update failed",
+      description: "Please try again",
+      variant: "destructive",
+    });
+  },
+});
+const handleSave = () => {
+  updateProfileMutation.mutate(formData);
+};
+
 
   const handleLogout = () => {
     localStorage.removeItem("user");
