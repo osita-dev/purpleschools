@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
+import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent } from "@/components/ui/card";
 import { Avatar } from "@/components/shared/Avatar";
 import { LevelProgressRing } from "@/components/shared/LevelProgressRing";
@@ -84,31 +85,36 @@ export default function Dashboard() {
   //   }
   // }, [navigate, stats.streak]);
 
+  const { data, isError } = useQuery({
+    queryKey: ["dashboardUser"],
+    queryFn: async () => {
+      const token = localStorage.getItem("token");
+
+      if (!token) throw new Error("No token");
+
+      const res = await fetch("https://purpleshoolserver.onrender.com/profile/me", {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      if (!res.ok) throw new Error("Failed to fetch user");
+
+      const result = await res.json();
+      return result.data;
+    },
+    staleTime: 1000 * 60 * 10, // 10 mins cache
+  });
+
   useEffect(() => {
-    const fetchUser = async () => {
-      try {
-        const token = localStorage.getItem("token");
-        if (!token) return navigate("/"); // no token → redirect
+    if (data) {
+      setUser(data);
+    }
+  }, [data]);
 
-        const res = await fetch("https://purpleshoolserver.onrender.com/profile/me", {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-
-        if (!res.ok) throw new Error("Failed to fetch user");
-
-        const data = await res.json();
-        setUser(data.data); // remember backend wraps user in data
-      } catch (err: any) {
-        console.error(err);
-        navigate("/");
-      }
-    };
-
-    fetchUser();
-  }, [navigate]);
-
-
-
+  useEffect(() => {
+    if (isError) {
+      navigate("/");
+    }
+  }, [isError]);
   // Record daily login and update streak when Dashboard loads (with delay to allow state to settle)
   // Only call updateStreak - daily login is handled separately after streak modal closes
   useEffect(() => {

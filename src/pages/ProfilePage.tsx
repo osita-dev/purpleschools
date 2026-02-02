@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
+import { useQuery } from "@tanstack/react-query";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent } from "@/components/ui/card";
 import { Avatar } from "@/components/shared/Avatar";
@@ -43,6 +44,7 @@ export default function ProfilePage() {
   const { achievements, unreadCount, markAsRead, markAllAsRead } = useLevelProgressContext();
   const [user, setUser] = useState<User | null>(null);
   const [isEditing, setIsEditing] = useState(false);
+  
   const [formData, setFormData] = useState({
     name: "",
     school: "",
@@ -79,31 +81,39 @@ export default function ProfilePage() {
       default: return "bg-success/10 text-success";
     }
   };
+  const { data,isError } = useQuery({
+    queryKey: ["profile"],
+    queryFn: async () => {
+      const token = localStorage.getItem("token");
+
+      const res = await fetch("https://purpleshoolserver.onrender.com/profile/me", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (!res.ok) throw new Error("Unauthorized");
+
+      const result = await res.json();
+      return result.data;
+    },
+    staleTime: 1000 * 60 * 10, // cache for 10 mins
+  });
+
   useEffect(() => {
-    const fetchProfile = async () => {
-      try {
-        const token = localStorage.getItem("token");
+    if (data) {
+      setUser(data);
+      setFormData({
+        name: data.name,
+        school: data.school,
+        className: data.className,
+      });
+    }
+  }, [data]);
 
-        const res = await fetch("https://purpleshoolserver.onrender.com/profile/me", {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-
-        const data = await res.json();
-        setUser(data.data);
-        setFormData({
-          name: data.data.name,
-          school: data.data.school,
-          className: data.data.className,
-        });
-      } catch (err) {
-        navigate("/");
-      }
-    };
-
-    fetchProfile();
-  }, []);
+  useEffect(() => {
+    if (isError) navigate("/");
+  }, [isError]);
 
   const handleSave = async () => {
     try {
