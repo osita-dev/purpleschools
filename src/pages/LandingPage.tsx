@@ -91,7 +91,7 @@ export default function Landingpage() {
             <Button
               size="lg"
               onClick={() => navigate('/auth')}
-              className="text-base px-8 w-full max-w-xs mx-auto"
+              className="text-base px-8 w-full max-w-xs mx-auto rounded-none"
             >
               Start Learning
               <ArrowRight className="w-4 h-4 ml-2" />
@@ -107,7 +107,7 @@ export default function Landingpage() {
                   donateSection.scrollIntoView({ behavior: "smooth" });
                 }
               }}
-              className="text-base px-8 mt-3 w-full max-w-xs mx-auto"
+              className="text-base px-8 mt-3 w-full max-w-xs mx-auto rounded-none"
             >
               <HeartHandshake className="w-3 h-3" />
               Support Us
