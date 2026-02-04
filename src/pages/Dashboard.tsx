@@ -92,7 +92,7 @@ export default function Dashboard() {
 
       if (!token) throw new Error("No token");
 
-      const res = await fetch("https://purpleshoolserver.onrender.com/profile/me", {
+      const res = await fetch("http://localhost:5000/profile/me", {
         headers: { Authorization: `Bearer ${token}` },
       });
 
@@ -212,13 +212,13 @@ export default function Dashboard() {
               </p>
               <div className="flex items-center gap-2 mt-1">
                 <span className="text-lg">{currentLevel.icon}</span>
-                <span className="text-xs px-2 py-0.5 rounded-full bg-primary/10 text-primary font-semibold">
+                <span className="text-xs px-2 py-0.5 bg-primary/10 text-primary font-semibold">
                   Lvl {currentLevel.id} • {currentLevel.name}
                 </span>
               </div>
             </div>
           </div>
-          <p className="text-muted-foreground italic bg-secondary/50 rounded-xl p-4">
+          <p className="text-muted-foreground italic bg-secondary/50 p-4">
             "{randomMessage}"
           </p>
         </motion.div>
@@ -231,11 +231,11 @@ export default function Dashboard() {
           className="grid grid-cols-3 gap-3 mb-8"
         >
           <Card
-            className="text-center cursor-pointer hover:shadow-soft transition-shadow"
+            className="text-center cursor-pointer hover:shadow-soft transition-shadow rounded-none"
             onClick={() => setShowStreak(true)}
           >
             <CardContent className="p-4">
-              <div className="w-10 h-10 mx-auto mb-2 rounded-full bg-warning/10 flex items-center justify-center">
+              <div className="w-10 h-10 mx-auto mb-2 bg-warning/10 flex items-center justify-center">
                 <Flame className="w-5 h-5 text-warning" />
               </div>
               <p className="text-2xl font-bold text-foreground">{stats.streak}</p>
@@ -244,7 +244,7 @@ export default function Dashboard() {
           </Card>
 
           <Card
-            className="text-center cursor-pointer hover:shadow-soft transition-shadow"
+            className="text-center cursor-pointer hover:shadow-soft transition-shadow rounded-none"
             onClick={() => {
               const loginAchievement = achievements.find(a => a.type === "daily_login");
               if (loginAchievement) {
@@ -255,7 +255,7 @@ export default function Dashboard() {
             }}
           >
             <CardContent className="p-4">
-              <div className="w-10 h-10 mx-auto mb-2 rounded-full bg-primary/10 flex items-center justify-center">
+              <div className="w-10 h-10 mx-auto mb-2 bg-primary/10 flex items-center justify-center">
                 <Calendar className="w-5 h-5 text-primary" />
               </div>
               <p className="text-2xl font-bold text-foreground">{stats.totalDaysActive}</p>
@@ -264,11 +264,11 @@ export default function Dashboard() {
           </Card>
 
           <Card
-            className="text-center cursor-pointer hover:shadow-soft transition-shadow"
+            className="text-center cursor-pointer hover:shadow-soft transition-shadow rounded-none"
             onClick={() => setShowMicroWin(true)}
           >
             <CardContent className="p-4">
-              <div className="w-10 h-10 mx-auto mb-2 rounded-full bg-success/10 flex items-center justify-center">
+              <div className="w-10 h-10 mx-auto mb-2  bg-success/10 flex items-center justify-center">
                 <Trophy className="w-5 h-5 text-success" />
               </div>
               <p className="text-2xl font-bold text-foreground">{microWinsCount}</p>
@@ -284,7 +284,7 @@ export default function Dashboard() {
           transition={{ delay: 0.2 }}
           className="mb-8"
         >
-          <Card className="overflow-hidden">
+          <Card className="overflow-hidden rounded-none ">
             <CardContent className="p-6 relative">
               <div className="absolute top-4 right-4 opacity-20">
                 <Sparkles className="w-16 h-16" />
@@ -296,7 +296,7 @@ export default function Dashboard() {
                 <p className="text-muted-foreground mb-4">
                   Your AI tutor is here to help you understand anything, at your own pace.
                 </p>
-                <Button onClick={() => navigate("/learn")} size="lg" className="w-full sm:w-auto">
+                <Button onClick={() => navigate("/learn")} size="lg" className="w-full sm:w-auto rounded-none">
                   <MessageCircle className="w-5 h-5 mr-2" />
                   Start Learning
                 </Button>
@@ -312,7 +312,7 @@ export default function Dashboard() {
           transition={{ delay: 0.3 }}
         >
           <h3 className="text-lg font-semibold text-foreground mb-4">Your Learning Level</h3>
-          <Card className="overflow-hidden">
+          <Card className="overflow-hidden rounded-none">
             <CardContent className="p-6">
               <div className="flex items-center gap-6">
                 <LevelProgressRing size={100} />
@@ -321,7 +321,7 @@ export default function Dashboard() {
                     <p className="font-semibold text-foreground">
                       {currentLevel.name}
                     </p>
-                    <span className="text-xs px-2 py-0.5 rounded-full bg-primary/10 text-primary font-medium">
+                    <span className="text-xs px-2 py-0.5  bg-primary/10 text-primary font-medium">
                       {currentLevel.phaseName}
                     </span>
                   </div>
@@ -329,9 +329,9 @@ export default function Dashboard() {
                     {getEncouragingMessage()}
                   </p>
                   <div className="flex items-center gap-3">
-                    <div className="flex-1 h-2 bg-muted rounded-full overflow-hidden">
+                    <div className="flex-1 h-2 bg-muted  overflow-hidden">
                       <motion.div
-                        className="h-full gradient-primary rounded-full"
+                        className="h-full gradient-primary "
                         initial={{ width: 0 }}
                         animate={{ width: `${progressToNextLevel}%` }}
                         transition={{ duration: 0.8, ease: "easeOut" }}
@@ -356,7 +356,7 @@ export default function Dashboard() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.4 }}
-          className="mt-8"
+          className="mt-8 rounded-none"
         >
           <h3 className="text-lg font-semibold text-foreground mb-4">Continue Learning</h3>
           <div className="space-y-3">
@@ -367,12 +367,12 @@ export default function Dashboard() {
             ].map((item, index) => (
               <Card
                 key={index}
-                className="cursor-pointer hover:shadow-soft transition-all"
+                className="cursor-pointer hover:shadow-soft transition-all rounded-none "
                 onClick={() => navigate("/learn")}
               >
                 <CardContent className="p-4 flex items-center justify-between">
                   <div className="flex items-center gap-4">
-                    <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center">
+                    <div className="w-10 h-10 bg-primary/10 flex items-center justify-center">
                       <BookOpen className="w-5 h-5 text-primary" />
                     </div>
                     <div>
@@ -381,9 +381,9 @@ export default function Dashboard() {
                     </div>
                   </div>
                   <div className="flex items-center gap-3">
-                    <div className="w-16 h-2 bg-muted rounded-full overflow-hidden">
+                    <div className="w-16 h-2 bg-muted overflow-hidden">
                       <div
-                        className="h-full gradient-primary rounded-full transition-all duration-500"
+                        className="h-full gradient-primary transition-all duration-500"
                         style={{ width: `${item.progress}%` }}
                       />
                     </div>

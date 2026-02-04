@@ -25,7 +25,6 @@ import {
   LogOut,
   ChevronRight,
   Check,
-  RotateCcw
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import PageLoader from "@/components/shared/purpleLoad";
