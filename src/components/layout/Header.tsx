@@ -47,12 +47,12 @@ useEffect(() => {
               <Link
                 key={item.path}
                 to={item.path}
-                className="relative flex items-center gap-2 px-4 py-2 rounded-xl transition-colors"
+                className="relative flex items-center gap-2 px-4 py-2 transition-colors"
               >
                 {isActive && (
                   <motion.div
                     layoutId="activeTabDesktop"
-                    className="absolute inset-0 bg-primary/10 rounded-xl"
+                    className="absolute inset-0 bg-primary/10"
                     transition={{ type: "spring", damping: 25, stiffness: 300 }}
                   />
                 )}

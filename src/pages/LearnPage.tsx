@@ -278,7 +278,7 @@ export default function LearnPage() {
                   <Avatar name="You" size="md" className="flex-shrink-0  bg-primary" />
                 )}
                 <Card
-                  className={`max-w-[80%] ${
+                  className={`max-w-[80%] rounded-none ${
                     message.role === "user"
                       ? "bg-primary text-primary-foreground"
                       : "bg-card"
@@ -306,9 +306,9 @@ export default function LearnPage() {
               </div>
               <Card className="bg-card">
                 <div className="p-4 flex gap-1">
-                  <span className="w-2 h-2 bg-muted-foreground rounded-full animate-bounce" style={{ animationDelay: "0ms" }} />
-                  <span className="w-2 h-2 bg-muted-foreground rounded-full animate-bounce" style={{ animationDelay: "150ms" }} />
-                  <span className="w-2 h-2 bg-muted-foreground rounded-full animate-bounce" style={{ animationDelay: "300ms" }} />
+                  <span className="w-2 h-2 bg-muted-foreground animate-bounce" style={{ animationDelay: "0ms" }} />
+                  <span className="w-2 h-2 bg-muted-foreground animate-bounce" style={{ animationDelay: "150ms" }} />
+                  <span className="w-2 h-2 bg-muted-foreground animate-bounce" style={{ animationDelay: "300ms" }} />
                 </div>
               </Card>
             </motion.div>
@@ -332,10 +332,10 @@ export default function LearnPage() {
               value={input}
               onChange={(e) => setInput(e.target.value)}
               placeholder="Ask me anything..."
-              className="flex-1"
+              className="flex-1 rounded-none"
               disabled={isTyping}
             />
-            <Button type="submit" size="icon" disabled={!input.trim() || isTyping}>
+            <Button type="submit" size="icon" className="rounded-none" disabled={!input.trim() || isTyping}>
               <Send className="w-5 h-5" />
             </Button>
           </form>

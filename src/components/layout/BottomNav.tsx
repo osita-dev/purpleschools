@@ -22,12 +22,12 @@ export function BottomNav() {
             <NavLink
               key={item.path}
               to={item.path}
-              className="relative flex flex-col items-center py-2 px-4 rounded-xl transition-colors"
+              className="relative flex flex-col items-center py-2 px-4 transition-colors"
             >
               {isActive && (
                 <motion.div
                   layoutId="activeTab"
-                  className="absolute inset-0 bg-primary/10 rounded-xl"
+                  className="absolute inset-0 bg-primary/10 rounded-none"
                   transition={{ type: "spring", damping: 25, stiffness: 300 }}
                 />
               )}
