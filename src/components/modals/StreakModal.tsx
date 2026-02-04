@@ -37,10 +37,10 @@ export function StreakModal({
             transition={{ type: "spring", damping: 25, stiffness: 300 }}
             className="fixed inset-x-4 top-[45%] -translate-y-1/2 mx-auto max-w-sm z-50 md:inset-x-auto md:left-1/2 md:-translate-x-1/2"
           >
-            <div className="bg-card rounded-3xl p-8 shadow-glow border border-warning/20 text-center relative overflow-hidden">
+            <div className="bg-card p-8 shadow-glow border border-warning/20 text-center relative overflow-hidden">
               <button
                 onClick={onClose}
-                className="absolute top-4 right-4 p-1 rounded-full hover:bg-muted transition-colors"
+                className="absolute top-4 right-4 p-1 hover:bg-muted transition-colors"
               >
                 <X className="w-5 h-5 text-muted-foreground" />
               </button>
@@ -51,7 +51,7 @@ export function StreakModal({
                 transition={{ delay: 0.2, type: "spring", damping: 10 }}
                 className="relative inline-flex items-center justify-center mb-4"
               >
-                <div className="w-20 h-20 rounded-full bg-warning/10 flex items-center justify-center">
+                <div className="w-20 h-20 bg-warning/10 flex items-center justify-center">
                   <Flame className="w-10 h-10 text-warning animate-bounce-gentle" />
                 </div>
               </motion.div>
