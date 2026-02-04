@@ -87,7 +87,7 @@ export default function ProfilePage() {
       const token = localStorage.getItem("token");
 
 
-      const res = await fetch("https://purpleschool-api.onrender.com/profile/me", {
+      const res = await fetch("https://purpleshoolserver.onrender.com/profile/me", {
         headers: {
           Authorization: `Bearer ${token}`,
         },
