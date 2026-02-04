@@ -849,7 +849,7 @@ export default function Landingpage() {
             </p>
             <Button
               size="sm"
-              onClick={() => navigate('/learn')}
+              onClick={() => navigate('/auth')}
               className="text-sm "
             >
               Start Learning Today
