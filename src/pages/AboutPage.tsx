@@ -2,6 +2,7 @@ import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import { Header } from "@/components/layout/Header";
 import { BottomNav } from "@/components/layout/BottomNav";
+import { FeedbackContactSection } from "@/components/sections/FeedbackContactSection";
 import { Button } from "@/components/ui/button";
 import {
   Accordion,
@@ -787,14 +788,14 @@ export default function AboutPage() {
           {/* Impact Numbers */}
           <motion.div 
             {...fadeInUp}
-            className="grid grid-cols-3 gap-4 mb-12"
+            className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-12"
           >
             {[
               { number: "10,000+", label: "Students to reach" },
               { number: "50+", label: "Topics to cover" },
               { number: "∞", label: "Dreams to support" }
             ].map((stat, i) => (
-              <div key={i} className="text-center p-4 bg-primary/5 rounded-xl border border-primary/20">
+              <div key={i} className="text-center p-4 mb-4 bg-primary/5 rounded-xl border border-primary/20">
                 <p className="text-2xl md:text-3xl font-bold text-primary mb-1">{stat.number}</p>
                 <p className="text-xs md:text-sm text-muted-foreground">{stat.label}</p>
               </div>
@@ -894,6 +895,9 @@ export default function AboutPage() {
           </motion.div>
         </div>
       </section>
+
+      {/* Feedback & Contact Section */}
+      <FeedbackContactSection />
 
       {/* Footer */}
       <footer className="py-12 px-4 border-t border-border">

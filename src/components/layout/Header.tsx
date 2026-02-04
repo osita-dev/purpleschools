@@ -33,7 +33,7 @@ useEffect(() => {
       <div className="max-w-6xl mx-auto px-6 py-3 flex items-center justify-between">
         {/* Logo & Brand */}
         <Link to="/dashboard" className="flex items-center gap-2">
-          <div className="w-10 h-10 gradient-primary rounded-xl flex items-center justify-center shadow-soft">
+          <div className="w-10 h-10 bg-primary rounded-xl flex items-center justify-center shadow-soft">
             <GraduationCap className="w-5 h-5 text-primary-foreground" />
           </div>
           <span className="text-xl font-bold text-gradient">PurpleSchool</span>
@@ -83,8 +83,8 @@ useEffect(() => {
             onMarkAsRead={markAsRead}
             onMarkAllAsRead={markAllAsRead}
           />
-          <Link to="/profile" className="flex items-center gap-2">
-             <Avatar name={userName || "Learner"} size="sm" />
+          <Link to="/profile" className="flex items-center gap-2 ">
+             <Avatar name={userName || "Learner"} size="sm" className="bg-primary" />
           </Link>
         </div>
       </div>

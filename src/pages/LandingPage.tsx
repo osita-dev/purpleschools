@@ -19,7 +19,6 @@ import {
   CheckCircle2,
   Users,
   GraduationCap,
-  School,
   Heart,
   ArrowRight,
   Flame,
@@ -30,7 +29,7 @@ import {
   HelpCircle,
   HeartHandshake
 } from "lucide-react";
-import DonateSection from "@/components/sections/DonateSection";
+
 
 const fadeInUp = {
   initial: { opacity: 0, y: 20 },
@@ -722,7 +721,7 @@ export default function Landingpage() {
           {/* Impact Numbers */}
           <motion.div
             {...fadeInUp}
-            className="grid grid-cols-3 gap-4 mb-12"
+            className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-12"
           >
             {[
               { number: "10,000+", label: "Students to reach" },
@@ -737,13 +736,10 @@ export default function Landingpage() {
           </motion.div>
 
           {/* Donation Options */}
-          <DonateSection/>
-          </div>
-          </section>
-          
+          <motion.div {...fadeInUp} className="bg-card p-8 md:p-10 rounded-2xl border border-border text-center" > <h3 className="text-2xl font-bold mb-4">Every contribution matters</h3> <p className="text-muted-foreground mb-8 max-w-xl mx-auto"> Whether you sponsor one student or support our entire mission, your generosity creates ripples of change across West Africa. </p> <div className="grid sm:grid-cols-3 gap-4 mb-8"> {[{ amount: "₦5,000", label: "Sponsor a student for 1 month", icon: Heart }, { amount: "₦25,000", label: "Fund curriculum development", icon: BookOpen }, { amount: "Any Amount", label: "Support our mission", icon: Sparkles }].map((option, i) => (<div key={i} className="p-4 bg-muted/50 rounded-xl border border-border hover:border-primary/30 transition-colors cursor-pointer" > <option.icon className="w-6 h-6 text-primary mx-auto mb-2" /> <p className="text-xl font-bold text-primary">{option.amount}</p> <p className="text-xs text-muted-foreground">{option.label}</p> </div>))} </div> <div className="flex flex-col sm:flex-row gap-4 justify-center"> <Button size="lg" className="text-base bg-accent hover:bg-accent/90 text-accent-foreground"> <Heart className="w-4 h-4 mr-2" /> Donate Now </Button> <Button size="lg" variant="outline" className="text-base"> <HeartHandshake className="w-4 h-4 mr-2" /> Partner With Us </Button> </div> <p className="text-sm text-muted-foreground mt-6"> Want to support differently?{" "} <button className="text-primary hover:underline font-medium">Contact us</button> {" "}to discuss corporate partnerships, sponsorships, or volunteer opportunities. </p> </motion.div> {/* Closing Emotional Note */} <motion.div {...fadeInUp} className="text-center mt-12" > <p className="text-lg text-muted-foreground italic max-w-2xl mx-auto"> "When you support PurpleSchool, you're not just donating to an app. You're investing in the dreams of thousands of young Africans who believe that education can change their lives—and the lives of their families." </p> <p className="text-foreground font-semibold mt-4">— The PurpleSchool Team 💜</p> </motion.div> </div> </section>
 
       {/* Final CTA */}
-      <section className="py-20 md:py-28 px-4">
+      < section className="py-20 md:py-28 px-4" >
         <div className="container mx-auto max-w-3xl">
           <motion.div
             {...fadeInUp}
@@ -776,10 +772,10 @@ export default function Landingpage() {
             </div>
           </motion.div>
         </div>
-      </section>
+      </section >
 
       {/* Footer */}
-      <footer className="py-12 px-4 border-t border-border">
+      < footer className="py-12 px-4 border-t border-border" >
         <div className="container mx-auto max-w-4xl">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8 mb-10">
             {/* Brand */}
@@ -856,9 +852,9 @@ export default function Landingpage() {
             </Button>
           </div>
         </div>
-      </footer>
+      </footer >
 
       <div className="pb-20 md:pb-0" />
-    </div>
+    </div >
   );
 }

@@ -19,7 +19,7 @@ export default function AuthPage() {
     className: "",
   });
 
-  const API_BASE = "https://purpleshoolserver.onrender.com";
+  const API_BASE = "https://purpleschool-api.onrender.com";
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -73,13 +73,12 @@ export default function AuthPage() {
     <div className="min-h-screen gradient-calm flex flex-col">
       {/* Hero */}
       <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} className="px-6 pt-12 pb-8 text-center">
-        <div className="inline-flex items-center justify-center w-16 h-16 gradient-primary rounded-2xl shadow-glow mb-6">
+        <div className="inline-flex items-center justify-center w-16 h-16 bg-primary rounded-2xl shadow-glow mb-6">
           <GraduationCap className="w-8 h-8 text-primary-foreground" />
         </div>
         <h1 className="text-3xl md:text-4xl font-bold text-foreground mb-3">PurpleSchool</h1>
-        <p className="text-muted-foreground max-w-sm mx-auto">
-          Your patient AI tutor that adapts to your pace and celebrates every step forward.
-        </p>
+        The AI tutor that supports{" "}
+            <span className="text-primary">West African Examination Council (WAEC)</span>
       </motion.div>
 
       {/* Features */}

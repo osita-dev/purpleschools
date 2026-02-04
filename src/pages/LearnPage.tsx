@@ -8,7 +8,7 @@ import { Avatar } from "@/components/shared/Avatar";
 import { MicroWinModal } from "@/components/modals/MicroWinModal";
 import { BottomNav } from "@/components/layout/BottomNav";
 import { Header } from "@/components/layout/Header";
-import { Send, Sparkles, ArrowLeft, Lightbulb } from "lucide-react";
+import { Send, ArrowLeft, Lightbulb, GraduationCap } from "lucide-react";
 import { useLevelProgressContext } from "@/contexts/LevelProgressContext";
 
 interface Message {
@@ -206,7 +206,7 @@ export default function LearnPage() {
   };
 
   return (
-    <div className="min-h-screen gradient-calm flex flex-col">
+    <div className="min-h-screen bg-calm flex flex-col">
       <Header />
 
       {/* Mobile Header */}
@@ -219,8 +219,8 @@ export default function LearnPage() {
             <ArrowLeft className="w-5 h-5 text-foreground" />
           </button>
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 gradient-primary rounded-xl flex items-center justify-center shadow-soft">
-              <Sparkles className="w-5 h-5 text-primary-foreground" />
+            <div className="w-10 h-10 bg-primary rounded-xl flex items-center justify-center shadow-soft">
+              <GraduationCap className="w-5 h-5 text-primary-foreground" />
             </div>
             <div>
               <h1 className="font-semibold text-foreground">PurpleSchool</h1>
@@ -271,11 +271,11 @@ export default function LearnPage() {
                 }`}
               >
                 {message.role === "assistant" ? (
-                  <div className="w-10 h-10 gradient-primary rounded-xl flex items-center justify-center flex-shrink-0 shadow-soft">
-                    <Sparkles className="w-5 h-5 text-primary-foreground" />
+                  <div className="w-10 h-10 bg-primary rounded-xl flex items-center justify-center flex-shrink-0 shadow-soft">
+                    <GraduationCap className="w-5 h-5 text-primary-foreground" />
                   </div>
                 ) : (
-                  <Avatar name="You" size="md" className="flex-shrink-0" />
+                  <Avatar name="You" size="md" className="flex-shrink-0  bg-primary" />
                 )}
                 <Card
                   className={`max-w-[80%] ${
@@ -301,8 +301,8 @@ export default function LearnPage() {
               animate={{ opacity: 1, y: 0 }}
               className="flex gap-3"
             >
-              <div className="w-10 h-10 gradient-primary rounded-xl flex items-center justify-center flex-shrink-0 shadow-soft">
-                <Sparkles className="w-5 h-5 text-primary-foreground" />
+              <div className="w-10 h-10 bg-primary rounded-xl flex items-center justify-center flex-shrink-0 shadow-soft">
+                <GraduationCap className="w-5 h-5 text-primary-foreground" />
               </div>
               <Card className="bg-card">
                 <div className="p-4 flex gap-1">

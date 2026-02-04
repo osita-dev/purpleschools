@@ -92,7 +92,7 @@ export default function Dashboard() {
 
       if (!token) throw new Error("No token");
 
-      const res = await fetch("https://purpleshoolserver.onrender.com/profile/me", {
+      const res = await fetch("https://purpleschool-api.onrender.com/profile/me", {
         headers: { Authorization: `Bearer ${token}` },
       });
 
@@ -200,7 +200,7 @@ export default function Dashboard() {
         >
           <div className="flex items-center gap-4 mb-4">
 
-            <Avatar name={user?.name || "Learner"} size="lg" />
+            <Avatar name={user?.name || "Learner"} size="lg" className="bg-primary" />
 
             <div>
               <h1 className="text-2xl md:text-3xl font-bold text-foreground">

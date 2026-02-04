@@ -26,9 +26,9 @@ export function MicroWinModal({ isOpen, onClose, message, emoji = "🎉" }: Micr
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.9, y: 20 }}
             transition={{ type: "spring", damping: 25, stiffness: 300 }}
-            className="fixed inset-x-4 top-1/2 -translate-y-1/2 mx-auto max-w-sm z-50 md:inset-x-auto md:left-1/2 md:-translate-x-1/2"
+            className="fixed inset-x-4 top-1/2 -translate-y-1/2  mx-auto max-w-sm z-50 md:inset-x-auto md:left-1/2 md:-translate-x-1/2"
           >
-            <div className="gradient-card rounded-3xl p-8 shadow-glow border border-primary/20 text-center relative overflow-hidden">
+            <div className="bg-card rounded-3xl p-8 shadow-glow border border-primary/20 text-center relative overflow-hidden">
               {/* Decorative sparkles */}
               <div className="absolute top-4 right-4">
                 <Sparkles className="w-5 h-5 text-primary/40 animate-pulse-soft" />

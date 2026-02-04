@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
-import { useMutation,useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent } from "@/components/ui/card";
 import { Avatar } from "@/components/shared/Avatar";
@@ -28,6 +28,7 @@ import {
   RotateCcw
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import PageLoader from "@/components/shared/purpleLoad";
 
 interface User {
   name: string;
@@ -80,12 +81,13 @@ export default function ProfilePage() {
       default: return "bg-success/10 text-success";
     }
   };
-  const { data,isError } = useQuery({
+  const { data, isLoading, isError } = useQuery({
     queryKey: ["profile"],
     queryFn: async () => {
       const token = localStorage.getItem("token");
 
-      const res = await fetch("https://purpleshoolserver.onrender.com/profile/me", {
+
+      const res = await fetch("https://purpleschool-api.onrender.com/profile/me", {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -97,6 +99,8 @@ export default function ProfilePage() {
       return result.data;
     },
     staleTime: 1000 * 60 * 10, // cache for 10 mins
+
+
   });
 
   useEffect(() => {
@@ -115,58 +119,59 @@ export default function ProfilePage() {
   }, [isError]);
 
   const updateProfileMutation = useMutation({
-  mutationFn: async (updatedData: any) => {
-    const token = localStorage.getItem("token");
+    mutationFn: async (updatedData: any) => {
+      const token = localStorage.getItem("token");
 
-    const res = await fetch("https://purpleshoolserver.onrender.com/profile/me", {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify(updatedData),
-    });
+      const res = await fetch("https://purpleschool-api.onrender.com/profile/me", {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(updatedData),
+      });
 
-    if (!res.ok) throw new Error("Failed to update profile");
+      if (!res.ok) throw new Error("Failed to update profile");
 
-    return res.json();
-  },
+      return res.json();
+    },
 
-  onSuccess: (data) => {
-    setUser(data.user);
+    onSuccess: (data) => {
+      setUser(data.user);
 
-    localStorage.setItem("user", JSON.stringify(data.user));
+      localStorage.setItem("user", JSON.stringify(data.user));
 
-    // 🔥 THIS IS THE IMPORTANT PART
-   
-   
-    setIsEditing(false);
+      // 🔥 THIS IS THE IMPORTANT PART
 
-    toast({
-      title: "Profile updated",
-      description: "Your changes have been saved.",
-    });
-  },
 
-  onError: () => {
-    toast({
-      title: "Update failed",
-      description: "Please try again",
-      variant: "destructive",
-    });
-  },
-});
-const handleSave = () => {
-  updateProfileMutation.mutate(formData);
-};
+      setIsEditing(false);
+
+      toast({
+        title: "Profile updated",
+        description: "Your changes have been saved.",
+      });
+    },
+
+    onError: () => {
+      toast({
+        title: "Update failed",
+        description: "Please try again",
+        variant: "destructive",
+      });
+    },
+  });
+  const handleSave = () => {
+    updateProfileMutation.mutate(formData);
+  };
 
 
   const handleLogout = () => {
     localStorage.removeItem("user");
     navigate("/");
   };
-
-  if (!user) return null;
+  
+  if (isLoading) return <PageLoader />;
+  if (!user) return null; // should never happen after loader
 
   // const settingsItems = [
   //   { icon: Bell, label: "Notifications", description: "Manage your reminders" },
@@ -200,7 +205,7 @@ const handleSave = () => {
             <CardContent className="p-6">
               {/* Mobile: stacked layout, Desktop: row layout */}
               <div className="flex flex-col items-center text-center sm:flex-row sm:items-center sm:text-left gap-4 mb-6">
-                <Avatar name={user.name} size="xl" />
+                <Avatar name={user.name} size="xl" className="bg-primary" />
                 <div className="flex-1 min-w-0">
                   <h2 className="text-xl font-bold text-foreground truncate">{user.name}</h2>
                   <p className="text-muted-foreground text-sm truncate">{user.email}</p>

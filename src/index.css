@@ -84,6 +84,7 @@
     --primary: 263 70% 60%;
     --primary-hover: 263 70% 70%;
     --primary-foreground: 0 0% 100%;
+    --text-primary-foreground:222 47% 6%;
 
     /* Slate dark */
     --secondary: 217 33% 17%;
