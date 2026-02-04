@@ -121,7 +121,7 @@ export default function ProfilePage() {
     mutationFn: async (updatedData: any) => {
       const token = localStorage.getItem("token");
 
-      const res = await fetch("https://purpleschool-api.onrender.com/profile/me", {
+      const res = await fetch("https://purpleshoolserver.onrender.com/profile/me", {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
