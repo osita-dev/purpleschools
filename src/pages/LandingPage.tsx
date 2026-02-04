@@ -53,7 +53,7 @@ export default function Landingpage() {
     <div className="min-h-screen bg-background">
 
       {/* Hero Section */}
-      <section className="pt-10 pb-10 md:pt-10 md:pb-10 px-4">
+      <section className="pt-8 pb-8 md:pt-8 md:pb-8 px-4">
         
         <div className="container mx-auto max-w-4xl text-center">
           <motion.div {...fadeInUp}>
