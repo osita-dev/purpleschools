@@ -57,7 +57,7 @@ export default function Landingpage() {
         
         <div className="container mx-auto max-w-4xl text-center">
           <motion.div {...fadeInUp}>
-            <div className="inline-flex items-center gap-2 px-4 py-2 mb-8 rounded-full bg-primary/10 border border-primary/20">
+            <div className="inline-flex items-center gap-2 px-4 py-2 mb-8  bg-primary/10 border border-primary/20">
               <GraduationCap className="w-4 h-4 text-primary" />
               <span className="text-lg font-medium text-primary">PurpleSchool</span>
             </div>
@@ -91,7 +91,7 @@ export default function Landingpage() {
             <Button
               size="lg"
               onClick={() => navigate('/auth')}
-              className="text-base px-8"
+              className="text-base px-8 w-full max-w-xs mx-auto"
             >
               Start Learning
               <ArrowRight className="w-4 h-4 ml-2" />
@@ -107,7 +107,7 @@ export default function Landingpage() {
                   donateSection.scrollIntoView({ behavior: "smooth" });
                 }
               }}
-              className="text-base px-8 mt-3"
+              className="text-base px-8 mt-3 w-full max-w-xs mx-auto"
             >
               <HeartHandshake className="w-3 h-3" />
               Support Us
