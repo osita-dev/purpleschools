@@ -92,7 +92,7 @@ export default function Dashboard() {
 
       if (!token) throw new Error("No token");
 
-      const res = await fetch("https://purpleshoolserver.onrender.comprofile/me", {
+      const res = await fetch("https://purpleshoolserver.onrender.com/profile/me", {
         headers: { Authorization: `Bearer ${token}` },
       });
 

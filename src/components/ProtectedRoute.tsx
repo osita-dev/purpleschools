@@ -6,7 +6,7 @@ export default function ProtectedRoute() {
 
   if (!token) {
     // If no token, redirect to login page
-    return <Navigate to="/" replace />;
+    return <Navigate to="/auth" replace />;
   }
 
   // If token exists, allow access to the route
