@@ -1,3 +1,5 @@
+import { Suspense, lazy } from "react";
+import PurpleLoader from "@/components/shared/PurpleLoader";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -5,10 +7,6 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { LevelProgressProvider } from "@/contexts/LevelProgressContext";
 import AuthPage from "./pages/AuthPage";
-import Dashboard from "./pages/Dashboard";
-import LearnPage from "./pages/LearnPage";
-import ProfilePage from "./pages/ProfilePage";
-import AboutPage from "./pages/AboutPage";
 import NotFound from "./pages/NotFound";
 import LandingPage from "./pages/LandingPage";
 import ProtectedRoute from "./components/ProtectedRoute";
@@ -24,7 +22,14 @@ export default function App() {
     }
   });
 
+  const Dashboard = lazy(() => import("./pages/Dashboard"));
+  const ProfilePage = lazy(() => import("./pages/ProfilePage"));
+  const AboutPage = lazy(() => import("./pages/AboutPage"));
+  const LearnPage = lazy(() => import("./pages/LearnPage"));
+
+
   return (
+    <Suspense fallback={<PurpleLoader/>}>
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
         <LevelProgressProvider>
@@ -49,5 +54,6 @@ export default function App() {
         </LevelProgressProvider>
       </TooltipProvider>
     </QueryClientProvider>
+    </Suspense>
   );
 }
