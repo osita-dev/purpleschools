@@ -20,6 +20,7 @@ export default function AuthPage() {
   });
 
   const API_BASE = "https://purpleschool-api.onrender.com";
+  // const API_BASE = "http://localhost:5000";
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
