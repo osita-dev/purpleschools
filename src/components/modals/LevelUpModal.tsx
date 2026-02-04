@@ -41,7 +41,7 @@ export function LevelUpModal({ isOpen, onClose, level }: LevelUpModalProps) {
             exit={{ scale: 0.8, opacity: 0, y: 20 }}
             transition={{ type: "spring", damping: 20, stiffness: 300 }}
             onClick={(e) => e.stopPropagation()}
-            className="relative w-full max-w-sm bg-card rounded-3xl p-8 shadow-2xl overflow-hidden"
+            className="relative w-full max-w-sm bg-card p-8 shadow-2xl overflow-hidden"
           >
             {/* Background decoration */}
             <div className="absolute inset-0 overflow-hidden pointer-events-none">
@@ -60,7 +60,7 @@ export function LevelUpModal({ isOpen, onClose, level }: LevelUpModalProps) {
                 initial={{ scale: 0, rotate: -180 }}
                 animate={{ scale: 1, rotate: 0 }}
                 transition={{ delay: 0.2, type: "spring", stiffness: 200 }}
-                className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-primary/10 flex items-center justify-center"
+                className="w-16 h-16 mx-auto mb-4 bg-primary/10 flex items-center justify-center"
               >
                 <Sparkles className="w-8 h-8 text-primary" />
               </motion.div>
@@ -148,7 +148,7 @@ export function LevelUpModal({ isOpen, onClose, level }: LevelUpModalProps) {
                     delay: 0.2 + Math.random() * 0.5,
                     ease: "easeIn" 
                   }}
-                  className="absolute top-0 w-2 h-2 rounded-full"
+                  className="absolute top-0 w-2 h-2"
                   style={{
                     left: `${Math.random() * 100}%`,
                     backgroundColor: [
