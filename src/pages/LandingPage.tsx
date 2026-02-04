@@ -29,6 +29,7 @@ import {
   HelpCircle,
   HeartHandshake
 } from "lucide-react";
+import { FeedbackContactSection } from "@/components/sections/FeedbackContactSection";
 
 
 const fadeInUp = {
@@ -54,7 +55,7 @@ export default function Landingpage() {
 
       {/* Hero Section */}
       <section className="pt-5 pb-5 md:pt-5 md:pb-5 px-4">
-        
+
         <div className="container mx-auto max-w-4xl text-center">
           <motion.div {...fadeInUp}>
             <div className="inline-flex items-center gap-2 px-4 py-2 mb-8  bg-primary/10 border border-primary/20">
@@ -143,9 +144,9 @@ export default function Landingpage() {
               <motion.div
                 key={i}
                 variants={fadeInUp}
-                className="flex items-start gap-3 p-4 bg-card rounded-xl border border-border"
+                className="flex items-start gap-3 p-4 bg-card border border-border"
               >
-                <div className="w-2 h-2 rounded-full bg-destructive mt-2 shrink-0" />
+                <div className="w-2 h-2 bg-destructive mt-2 shrink-0" />
                 <p className="text-muted-foreground">{problem}</p>
               </motion.div>
             ))}
@@ -189,9 +190,9 @@ export default function Landingpage() {
               <motion.div
                 key={i}
                 variants={fadeInUp}
-                className="flex items-center gap-3 p-4 bg-card rounded-xl border border-border"
+                className="flex items-center gap-3 p-4 bg-card border border-border"
               >
-                <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
+                <div className="w-10 h-10  bg-primary/10 flex items-center justify-center shrink-0">
                   <item.icon className="w-5 h-5 text-primary" />
                 </div>
                 <p className="font-medium">{item.text}</p>
@@ -236,7 +237,7 @@ export default function Landingpage() {
               <motion.div
                 key={i}
                 variants={fadeInUp}
-                className="flex items-start gap-3 p-4 bg-card rounded-xl border border-border"
+                className="flex items-start gap-3 p-4 bg-card border border-border"
               >
                 <CheckCircle2 className="w-5 h-5 text-success shrink-0 mt-0.5" />
                 <p className="text-sm text-muted-foreground">{item}</p>
@@ -297,9 +298,9 @@ export default function Landingpage() {
               <motion.div
                 key={i}
                 variants={fadeInUp}
-                className="p-6 bg-card rounded-2xl border border-border hover:border-primary/30 transition-colors"
+                className="p-6 bg-card border border-border hover:border-primary/30 transition-colors"
               >
-                <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center mb-4">
+                <div className="w-12 h-12 bg-primary/10 flex items-center justify-center mb-4">
                   <item.icon className="w-6 h-6 text-primary" />
                 </div>
                 <h3 className="text-lg font-semibold mb-2">{item.title}</h3>
@@ -339,7 +340,7 @@ export default function Landingpage() {
               ].map((item, i) => (
                 <span
                   key={i}
-                  className="px-4 py-2 bg-primary/10 text-primary font-medium rounded-full text-sm"
+                  className="px-4 py-2 bg-primary/10 text-primary font-medium mx-auto text-sm"
                 >
                   {item}
                 </span>
@@ -381,9 +382,9 @@ export default function Landingpage() {
               <motion.div
                 key={i}
                 variants={fadeInUp}
-                className="flex flex-col items-center text-center p-4 bg-card rounded-xl border border-border"
+                className="flex flex-col items-center text-center p-4 bg-card  border border-border"
               >
-                <div className="w-10 h-10 rounded-lg bg-accent/20 flex items-center justify-center mb-3">
+                <div className="w-10 h-10  bg-accent/20 flex items-center justify-center mb-3">
                   <item.icon className="w-5 h-5 text-accent" />
                 </div>
                 <p className="text-sm text-muted-foreground">{item.label}</p>
@@ -428,7 +429,7 @@ export default function Landingpage() {
               <motion.div
                 key={i}
                 variants={fadeInUp}
-                className="flex items-center gap-3 p-4 bg-card rounded-xl border border-border"
+                className="flex items-center gap-3 p-4 bg-card border border-border"
               >
                 <CheckCircle2 className="w-5 h-5 text-primary shrink-0" />
                 <p className="font-medium">{item}</p>
@@ -471,7 +472,7 @@ export default function Landingpage() {
               <motion.div
                 key={i}
                 variants={fadeInUp}
-                className="p-4 bg-card rounded-xl border border-border"
+                className="p-4 bg-card border border-border"
               >
                 <p className="text-sm text-muted-foreground">{item}</p>
               </motion.div>
@@ -527,7 +528,7 @@ export default function Landingpage() {
               <motion.div
                 key={i}
                 variants={fadeInUp}
-                className="p-6 bg-card rounded-2xl border border-border"
+                className="p-6 bg-card border border-border"
               >
                 <div className="flex gap-1 mb-4">
                   {[...Array(testimonial.rating)].map((_, j) => (
@@ -607,7 +608,7 @@ export default function Landingpage() {
                 <AccordionItem
                   key={i}
                   value={`item-${i}`}
-                  className="bg-card border border-border rounded-xl px-6"
+                  className="bg-card border border-border px-6"
                 >
                   <AccordionTrigger className="text-left hover:no-underline">
                     {faq.question}
@@ -626,7 +627,7 @@ export default function Landingpage() {
       <section id="donate" className="py-20 md:py-28 px-4 bg-muted/30">
         <div className="container mx-auto max-w-4xl">
           <motion.div {...fadeInUp} className="text-center mb-14">
-            <div className="inline-flex items-center gap-2 px-4 py-2 mb-6 rounded-full bg-accent/20 border border-accent/30">
+            <div className="inline-flex items-center gap-2 px-4 py-2 mb-6 bg-accent/20 border border-accent/30">
               <Heart className="w-4 h-4 text-accent fill-accent" />
               <span className="text-sm font-medium text-accent">Support Our Mission</span>
             </div>
@@ -641,10 +642,10 @@ export default function Landingpage() {
           {/* Emotional Story */}
           <motion.div
             {...fadeInUp}
-            className="bg-card p-8 md:p-10 rounded-2xl border border-border mb-12"
+            className="bg-card p-8 md:p-10  border border-border mb-12"
           >
             <div className="flex items-start gap-4 mb-6">
-              <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
+              <div className="w-12 h-12  bg-primary/10 flex items-center justify-center shrink-0">
                 <Heart className="w-6 h-6 text-primary" />
               </div>
               <div>
@@ -708,9 +709,9 @@ export default function Landingpage() {
               <motion.div
                 key={i}
                 variants={fadeInUp}
-                className="p-6 bg-card rounded-2xl border border-border hover:border-primary/30 transition-colors"
+                className="p-6 bg-card border border-border hover:border-primary/30 transition-colors"
               >
-                <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center mb-4">
+                <div className="w-12 h-12 bg-primary/10 flex items-center justify-center mb-4">
                   <reason.icon className={`w-6 h-6 ${reason.color}`} />
                 </div>
                 <h3 className="text-lg font-semibold mb-2">{reason.title}</h3>
@@ -729,7 +730,7 @@ export default function Landingpage() {
               { number: "50+", label: "Topics to cover" },
               { number: "∞", label: "Dreams to support" }
             ].map((stat, i) => (
-              <div key={i} className="text-center p-4 bg-primary/5 rounded-xl border border-primary/20">
+              <div key={i} className="text-center p-4 bg-primary/5 border border-primary/20">
                 <p className="text-2xl md:text-3xl font-bold text-primary mb-1">{stat.number}</p>
                 <p className="text-xs md:text-sm text-muted-foreground">{stat.label}</p>
               </div>
@@ -737,14 +738,15 @@ export default function Landingpage() {
           </motion.div>
 
           {/* Donation Options */}
-          <motion.div {...fadeInUp} className="bg-card p-8 md:p-10 rounded-2xl border border-border text-center" > <h3 className="text-2xl font-bold mb-4">Every contribution matters</h3> <p className="text-muted-foreground mb-8 max-w-xl mx-auto"> Whether you sponsor one student or support our entire mission, your generosity creates ripples of change across West Africa. </p> <div className="grid sm:grid-cols-3 gap-4 mb-8"> {[{ amount: "₦5,000", label: "Sponsor a student for 1 month", icon: Heart }, { amount: "₦25,000", label: "Fund curriculum development", icon: BookOpen }, { amount: "Any Amount", label: "Support our mission", icon: Sparkles }].map((option, i) => (<div key={i} className="p-4 bg-muted/50 rounded-xl border border-border hover:border-primary/30 transition-colors cursor-pointer" > <option.icon className="w-6 h-6 text-primary mx-auto mb-2" /> <p className="text-xl font-bold text-primary">{option.amount}</p> <p className="text-xs text-muted-foreground">{option.label}</p> </div>))} </div> <div className="flex flex-col sm:flex-row gap-4 justify-center"> <Button size="lg" className="text-base bg-accent hover:bg-accent/90 text-accent-foreground"> <Heart className="w-4 h-4 mr-2" /> Donate Now </Button> <Button size="lg" variant="outline" className="text-base"> <HeartHandshake className="w-4 h-4 mr-2" /> Partner With Us </Button> </div> <p className="text-sm text-muted-foreground mt-6"> Want to support differently?{" "} <button className="text-primary hover:underline font-medium">Contact us</button> {" "}to discuss corporate partnerships, sponsorships, or volunteer opportunities. </p> </motion.div> {/* Closing Emotional Note */} <motion.div {...fadeInUp} className="text-center mt-12" > <p className="text-lg text-muted-foreground italic max-w-2xl mx-auto"> "When you support PurpleSchool, you're not just donating to an app. You're investing in the dreams of thousands of young Africans who believe that education can change their lives—and the lives of their families." </p> <p className="text-foreground font-semibold mt-4">— The PurpleSchool Team 💜</p> </motion.div> </div> </section>
+          <motion.div {...fadeInUp} className="bg-card p-8 md:p-10 border border-border text-center" >
+            <h3 className="text-2xl font-bold mb-4">Every contribution matters</h3> <p className="text-muted-foreground mb-8 max-w-xl mx-auto"> Whether you sponsor one student or support our entire mission, your generosity creates ripples of change across West Africa. </p> <div className="grid sm:grid-cols-3 gap-4 mb-8"> {[{ amount: "₦5,000", label: "Sponsor a student for 1 month", icon: Heart }, { amount: "₦25,000", label: "Fund curriculum development", icon: BookOpen }, { amount: "Any Amount", label: "Support our mission", icon: Sparkles }].map((option, i) => (<div key={i} className="p-4 bg-muted/50 border border-border hover:border-primary/30 transition-colors cursor-pointer" > <option.icon className="w-6 h-6 text-primary mx-auto mb-2" /> <p className="text-xl font-bold text-primary">{option.amount}</p> <p className="text-xs text-muted-foreground">{option.label}</p> </div>))} </div> <div className="flex flex-col sm:flex-row gap-4 justify-center"> <Button size="lg" className="text-base bg-accent hover:bg-accent/90 text-accent-foreground rounded-none"> <Heart className="w-4 h-4 mr-2 " /> Donate Now </Button> <Button size="lg" variant="outline" className="text-base rounded-none"> <HeartHandshake className="w-4 h-4 mr-2" /> Partner With Us </Button> </div> <p className="text-sm text-muted-foreground mt-6"> Want to support differently?{" "} <button className="text-primary hover:underline font-medium">Contact us</button> {" "}to discuss corporate partnerships, sponsorships, or volunteer opportunities. </p> </motion.div> {/* Closing Emotional Note */} <motion.div {...fadeInUp} className="text-center mt-12" > <p className="text-lg text-muted-foreground italic max-w-2xl mx-auto"> "When you support PurpleSchool, you're not just donating to an app. You're investing in the dreams of thousands of young Africans who believe that education can change their lives—and the lives of their families." </p> <p className="text-foreground font-semibold mt-4">— The PurpleSchool Team 💜</p> </motion.div> </div> </section>
 
       {/* Final CTA */}
       < section className="py-20 md:py-28 px-4" >
         <div className="container mx-auto max-w-3xl">
           <motion.div
             {...fadeInUp}
-            className="text-center p-10 md:p-14 bg-primary/5 rounded-3xl border border-primary/20"
+            className="text-center p-10 md:p-14 bg-primary/5 border border-primary/20"
           >
             <Brain className="w-12 h-12 text-primary mx-auto mb-6" />
             <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold mb-4">
@@ -757,15 +759,15 @@ export default function Landingpage() {
               <Button
                 size="lg"
                 onClick={() => navigate('/auth')}
-                className="text-base"
+                className="text-base rounded-none"
               >
-                Create Free Account
+                Create Account
               </Button>
               <Button
                 size="lg"
                 variant="outline"
                 onClick={() => navigate('/learn')}
-                className="text-base"
+                className="text-base rounded-none"
               >
                 Start Learning Now
                 <ArrowRight className="w-4 h-4 ml-2" />
@@ -774,6 +776,8 @@ export default function Landingpage() {
           </motion.div>
         </div>
       </section >
+      {/* feedback */}
+      <FeedbackContactSection />
 
       {/* Footer */}
       < footer className="py-12 px-4 border-t border-border" >
@@ -782,7 +786,7 @@ export default function Landingpage() {
             {/* Brand */}
             <div className="col-span-2 md:col-span-1">
               <div className="flex items-center gap-2 mb-4">
-                <Sparkles className="w-5 h-5 text-primary" />
+                <GraduationCap className="w-5 h-5 text-primary" />
                 <span className="font-bold text-lg">PurpleSchool</span>
               </div>
               <p className="text-sm text-muted-foreground">
@@ -841,14 +845,14 @@ export default function Landingpage() {
           {/* Bottom Footer */}
           <div className="pt-8 border-t border-border flex flex-col sm:flex-row justify-between items-center gap-4">
             <p className="text-sm text-muted-foreground">
-              © 2025 PurpleSchool. All rights reserved.
+              © 2026 PurpleSchool. All rights reserved.
             </p>
             <Button
               size="sm"
               onClick={() => navigate('/learn')}
-              className="text-sm"
+              className="text-sm "
             >
-              Start Learning Free Today
+              Start Learning Today
               <ArrowRight className="w-3 h-3 ml-1" />
             </Button>
           </div>

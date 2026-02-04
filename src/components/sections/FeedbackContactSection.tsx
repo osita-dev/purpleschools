@@ -57,17 +57,17 @@ export function FeedbackContactSection() {
 
         <motion.div {...fadeInUp}>
           <Tabs defaultValue="feedback" className="w-full">
-            <TabsList className="grid w-full grid-cols-2 mb-8 h-12 bg-muted/50">
+            <TabsList className="grid w-full grid-cols-2 mb-8 h-12 bg-muted/50 rounded-none">
               <TabsTrigger 
                 value="feedback" 
-                className="flex items-center gap-2 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
+                className="flex items-center gap-2 rounded-none data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
               >
                 <MessageSquare className="w-4 h-4" />
                 Give Feedback
               </TabsTrigger>
               <TabsTrigger 
                 value="contact"
-                className="flex items-center gap-2 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
+                className="flex items-center gap-2 rounded-none data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
               >
                 <Mail className="w-4 h-4" />
                 Contact Us
@@ -76,10 +76,10 @@ export function FeedbackContactSection() {
 
             {/* Feedback Tab */}
             <TabsContent value="feedback">
-              <div className="bg-card rounded-2xl border border-border p-6 md:p-8">
+              <div className="bg-card border border-border p-6 md:p-8">
                 {feedbackSubmitted ? (
                   <div className="text-center py-8">
-                    <div className="w-16 h-16 rounded-full bg-success/10 flex items-center justify-center mx-auto mb-4">
+                    <div className="w-16 h-16 bg-success/10 flex items-center justify-center mx-auto mb-4">
                       <CheckCircle2 className="w-8 h-8 text-success" />
                     </div>
                     <h3 className="text-xl font-semibold mb-2">Thank You!</h3>
@@ -126,8 +126,8 @@ export function FeedbackContactSection() {
                       <Label htmlFor="feedback-name">Your Name (optional)</Label>
                       <Input 
                         id="feedback-name" 
-                        placeholder="e.g. Chidi Okonkwo" 
-                        className="bg-background"
+                        placeholder="e.g. Christopher Osita" 
+                        className="bg-background rounded-none"
                       />
                     </div>
 
@@ -136,7 +136,7 @@ export function FeedbackContactSection() {
                       <Textarea 
                         id="feedback-message" 
                         placeholder="Tell us what you love, what could be better, or any suggestions..."
-                        className="min-h-[120px] bg-background resize-none"
+                        className="min-h-[120px] bg-background resize-none rounded-none"
                         required
                       />
                     </div>
@@ -148,11 +148,11 @@ export function FeedbackContactSection() {
                       <Input 
                         id="feedback-feature" 
                         placeholder="e.g. More Chemistry topics, offline mode..."
-                        className="bg-background"
+                        className="bg-background rounded-none"
                       />
                     </div>
 
-                    <Button type="submit" className="w-full" size="lg">
+                    <Button type="submit" className="w-full rounded-none" size="lg">
                       <Send className="w-4 h-4 mr-2" />
                       Submit Feedback
                     </Button>
@@ -163,10 +163,10 @@ export function FeedbackContactSection() {
 
             {/* Contact Tab */}
             <TabsContent value="contact">
-              <div className="bg-card rounded-2xl border border-border p-6 md:p-8">
+              <div className="bg-card  border border-border p-6 md:p-8 rounded-none">
                 {contactSubmitted ? (
                   <div className="text-center py-8">
-                    <div className="w-16 h-16 rounded-full bg-success/10 flex items-center justify-center mx-auto mb-4">
+                    <div className="w-16 h-16 bg-success/10 flex items-center justify-center mx-auto mb-4">
                       <CheckCircle2 className="w-8 h-8 text-success" />
                     </div>
                     <h3 className="text-xl font-semibold mb-2">Message Sent!</h3>
@@ -190,7 +190,7 @@ export function FeedbackContactSection() {
                           <Input 
                             id="contact-name" 
                             placeholder="Your full name"
-                            className="pl-10 bg-background"
+                            className="pl-10 bg-background rounded-none"
                             required
                           />
                         </div>
@@ -203,7 +203,7 @@ export function FeedbackContactSection() {
                             id="contact-email" 
                             type="email"
                             placeholder="you@example.com"
-                            className="pl-10 bg-background"
+                            className="pl-10 bg-background rounded-none"
                             required
                           />
                         </div>
@@ -218,7 +218,7 @@ export function FeedbackContactSection() {
                           id="contact-phone" 
                           type="tel"
                           placeholder="+234..."
-                          className="pl-10 bg-background"
+                          className="pl-10 bg-background rounded-none"
                         />
                       </div>
                     </div>
@@ -228,7 +228,7 @@ export function FeedbackContactSection() {
                       <Input 
                         id="contact-subject" 
                         placeholder="What is this about?"
-                        className="bg-background"
+                        className="bg-background rounded-none"
                         required
                       />
                     </div>
@@ -238,13 +238,13 @@ export function FeedbackContactSection() {
                       <Textarea 
                         id="contact-message" 
                         placeholder="How can we help you?"
-                        className="min-h-[120px] bg-background resize-none"
+                        className="min-h-[120px] bg-background resize-none rounded-none"
                         required
                       />
                     </div>
 
-                    <Button type="submit" className="w-full" size="lg">
-                      <Send className="w-4 h-4 mr-2" />
+                    <Button type="submit" className="w-full rounded-none" size="lg">
+                      <Send className="w-4 h-4 mr-2 " />
                       Send Message
                     </Button>
 
@@ -254,7 +254,7 @@ export function FeedbackContactSection() {
                         href="mailto:hello@purpleschool.ng" 
                         className="text-primary hover:underline"
                       >
-                        hello@purpleschool.ng
+                        purpleschool@gmail.com
                       </a>
                     </p>
                   </form>
