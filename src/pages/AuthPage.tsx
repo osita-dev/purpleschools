@@ -70,7 +70,7 @@ export default function AuthPage() {
   };
 
   return (
-    <div className="min-h-screen gradient-calm flex flex-col">
+    <div className="min-h-screen primary-calm flex flex-col">
       {/* Hero */}
       <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} className="px-6 pt-12 pb-8 text-center">
         <div className="inline-flex items-center justify-center w-16 h-16 bg-primary rounded-2xl shadow-glow mb-6">
@@ -94,8 +94,8 @@ export default function AuthPage() {
       </motion.div>
 
       {/* Auth Card */}
-      <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }} className="flex-1 px-4 pb-8">
-        <Card className="max-w-md mx-auto">
+      <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }} className="flex-1 px-4 pb-8 " >
+        <Card className="max-w-md mx-auto rounded-none" >
           <CardHeader className="text-center pb-4">
             <CardTitle className="text-2xl">{isLogin ? "Welcome Back!" : "Join PurpleSchool"}</CardTitle>
             <CardDescription>
@@ -106,15 +106,15 @@ export default function AuthPage() {
             <form onSubmit={handleSubmit} className="space-y-4">
               {!isLogin && (
                 <>
-                  <Input placeholder="Your name" value={formData.name} onChange={(e) => setFormData({ ...formData, name: e.target.value })} />
-                  <Input placeholder="School name" value={formData.school} onChange={(e) => setFormData({ ...formData, school: e.target.value })} />
-                  <Input placeholder="Class (e.g., JSS1- SSS3)" value={formData.className} onChange={(e) => setFormData({ ...formData, className: e.target.value })} />
+                  <Input placeholder="Your name" className="rounded-none" value={formData.name} onChange={(e) => setFormData({ ...formData, name: e.target.value })} />
+                  <Input placeholder="School name" className="rounded-none" value={formData.school} onChange={(e) => setFormData({ ...formData, school: e.target.value })} />
+                  <Input placeholder="Class (e.g., JSS1- SSS3)" className="rounded-none" value={formData.className} onChange={(e) => setFormData({ ...formData, className: e.target.value })} />
                 </>
               )}
-              <Input type="email" placeholder="Email address" value={formData.email} onChange={(e) => setFormData({ ...formData, email: e.target.value })} required />
-              <Input type="password" placeholder="Password" value={formData.password} onChange={(e) => setFormData({ ...formData, password: e.target.value })} required />
+              <Input type="email" placeholder="Email address" className="rounded-none" value={formData.email} onChange={(e) => setFormData({ ...formData, email: e.target.value })} required />
+              <Input type="password" placeholder="Password" className="rounded-none" value={formData.password} onChange={(e) => setFormData({ ...formData, password: e.target.value })} required />
 
-              <Button type="submit" className="w-full" size="lg" disabled={loading}>
+              <Button type="submit" className="w-full rounded-none" size="lg" disabled={loading}>
                 {loading ? "Processing..." : isLogin ? "Start Learning" : "Create Account"}
                 <ArrowRight className="w-4 h-4 ml-2" />
               </Button>
