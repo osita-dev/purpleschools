@@ -1,5 +1,15 @@
 {
   "rewrites": [
     { "source": "/(.*)", "destination": "/index.html" }
+  ],
+  "redirects": [
+    {
+      "source": "/(.*)",
+      "has": [
+        { "type": "host", "value": "purpleschool.org" }
+      ],
+      "destination": "https://www.purpleschool.org/$1",
+      "permanent": true
+    }
   ]
 }
